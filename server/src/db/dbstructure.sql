@@ -18,7 +18,7 @@ CREATE TABLE Usuario (
     id_usuario        SERIAL PRIMARY KEY,
     nombre_usuario    VARCHAR(50)  NOT NULL,
     email_usuario     VARCHAR(100) NOT NULL UNIQUE,
-    supabase_user_id  VARCHAR(200) NOT NULL UNIQUE,
+    password_hash VARCHAR(300) NOT NULL,
     fecha_creacion    DATE         NOT NULL DEFAULT CURRENT_DATE
 );
 
