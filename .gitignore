@@ -39,3 +39,4 @@ pnpm-debug.log*
 *.sw?
 
 project.vision.md
+server/src/generated

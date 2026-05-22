@@ -7,3 +7,123 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ENUMS
+enum ciclo_habitacion {
+  DIA
+  NOCHE
+  AMANECER
+}
+
+enum tipo_habito {
+  POSITIVO
+  NEGATIVO
+}
+
+enum clima_habitacion {
+  SOLEADO
+  LLUVIOSO
+  NUBLADO
+}
+
+// TABLAS
+model Usuario {
+  id_usuario Int @id @default(autoincrement())
+  nombre_usuario String
+  email_usuario String @unique
+  password_hash String 
+  fecha_creacion_usuario DateTime @db.Date @default(now())
+
+  // Relaciones
+  habitacion_usuario Habitacion?
+  identidades_usuario Identidad[]
+  habitos_usuario Habito[]
+}
+
+model Habitacion {
+  id_habitacion Int @id @default(autoincrement())
+  momentum_general_habitacion Float @default(0)
+  ciclo_actual_habitacion ciclo_habitacion @default(DIA)
+  clima_actual_habitacion clima_habitacion @default(SOLEADO)
+
+  id_usuario_habitacion Int @unique //FK
+  // Relacion creada
+  usuario Usuario @relation(fields: [id_usuario_habitacion], references: [id_usuario])
+}
+
+model Identidad {
+  id_identidad Int @id @default(autoincrement())
+  nombre_identidad String
+  nivel_identidad Int @default(1)
+  xp_actual_identidad Float @default(0)
+  
+  id_usuario_identidad Int //FK
+  // Relacion de la fk
+  usuario Usuario @relation(fields: [id_usuario_identidad], references: [id_usuario])
+
+  // Relaciones bidireccionales
+  HabitoIdentidad HabitoIdentidad[]
+
+  //Indices
+  @@index([id_usuario_identidad])
+}
+
+model Habito {
+  id_habito Int @id @default(autoincrement())
+  nombre_habito String 
+  tipo_habito tipo_habito 
+  momentum_habito Float @default(0)
+  xp_total_habito Float @default(0)
+  sistema_habito Json
+  dias_semana Int[] @default([])
+
+  id_usuario_habito Int
+  //Releacion de la fk
+  user Usuario @relation(fields: [id_usuario_habito], references: [id_usuario])
+
+  // Relacion bidireccional
+  elemento_habito Elemento?
+  habitoIdentidad HabitoIdentidad[]
+  registroDiario RegistroDiario[]
+
+  // Indices
+  @@index([id_usuario_habito])
+}
+
+model Elemento {
+  id_elemento Int @id @default(autoincrement())
+  nombre_elemento String
+  fase_elemento Int @default(0)
+  grid_col Int?
+  grid_fila Int?
+  xp_fase_actual_elemento Float @default(0)
+
+  id_habito_elemento Int @unique
+  // Relacion fk
+  habito Habito @relation(fields: [id_habito_elemento], references: [id_habito])
+}
+
+model HabitoIdentidad {
+  id_habitoIdentidad Int @id @default(autoincrement())
+
+  id_identidad_habitoIdentidad Int
+  id_habito_habitoIdentidad Int
+  //Relaciones fk
+  identidad Identidad @relation(fields: [id_identidad_habitoIdentidad], references: [id_identidad])
+  habito Habito @relation(fields: [id_habito_habitoIdentidad], references: [id_habito])
+}
+
+model RegistroDiario {
+  id_registro Int @id @default(autoincrement())
+  check_realizado_registro Boolean
+  fecha_registro DateTime @db.Date @default(now())
+  xp_registro Float
+  momentum_instante_registro Float
+
+  id_habito_registro Int
+  // Relacion Fk
+  habito Habito @relation(fields: [id_habito_registro], references: [id_habito])
+  // Indices
+  @@index([id_habito_registro])
+  @@index([fecha_registro])
+}

@@ -100,7 +100,7 @@ CREATE TABLE Elemento (
 -- ============================================================
 
 CREATE TABLE Habito_Identidad (
-    id_habit_identidad      SERIAL PRIMARY KEY,
+    id_habito_identidad      SERIAL PRIMARY KEY,
     id_identidad            INT NOT NULL,
     id_habito               INT NOT NULL,
 
