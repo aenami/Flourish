@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as IdentitiesIndexRouteImport } from './routes/Identities/index'
 import { Route as HomeIndexRouteImport } from './routes/Home/index'
 import { Route as HabitsIndexRouteImport } from './routes/Habits/index'
+import { Route as ElementsIndexRouteImport } from './routes/Elements/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,15 +35,22 @@ const HabitsIndexRoute = HabitsIndexRouteImport.update({
   path: '/Habits/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ElementsIndexRoute = ElementsIndexRouteImport.update({
+  id: '/Elements/',
+  path: '/Elements/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/Elements/': typeof ElementsIndexRoute
   '/Habits/': typeof HabitsIndexRoute
   '/Home/': typeof HomeIndexRoute
   '/Identities/': typeof IdentitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/Elements': typeof ElementsIndexRoute
   '/Habits': typeof HabitsIndexRoute
   '/Home': typeof HomeIndexRoute
   '/Identities': typeof IdentitiesIndexRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/Elements/': typeof ElementsIndexRoute
   '/Habits/': typeof HabitsIndexRoute
   '/Home/': typeof HomeIndexRoute
   '/Identities/': typeof IdentitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/Habits/' | '/Home/' | '/Identities/'
+  fullPaths: '/' | '/Elements/' | '/Habits/' | '/Home/' | '/Identities/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/Habits' | '/Home' | '/Identities'
-  id: '__root__' | '/' | '/Habits/' | '/Home/' | '/Identities/'
+  to: '/' | '/Elements' | '/Habits' | '/Home' | '/Identities'
+  id: '__root__' | '/' | '/Elements/' | '/Habits/' | '/Home/' | '/Identities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ElementsIndexRoute: typeof ElementsIndexRoute
   HabitsIndexRoute: typeof HabitsIndexRoute
   HomeIndexRoute: typeof HomeIndexRoute
   IdentitiesIndexRoute: typeof IdentitiesIndexRoute
@@ -99,11 +109,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HabitsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/Elements/': {
+      id: '/Elements/'
+      path: '/Elements'
+      fullPath: '/Elements/'
+      preLoaderRoute: typeof ElementsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ElementsIndexRoute: ElementsIndexRoute,
   HabitsIndexRoute: HabitsIndexRoute,
   HomeIndexRoute: HomeIndexRoute,
   IdentitiesIndexRoute: IdentitiesIndexRoute,

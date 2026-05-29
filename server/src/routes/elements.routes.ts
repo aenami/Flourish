@@ -5,7 +5,7 @@ import { authenticateUser } from '../middlewares/auth.middleware.js';
 const router = express.Router()
 
 // Ruta para traer todos los habitos y la información mas relevante relacionada a estos
-router.get('/Elements', authenticateUser, Elements)
+router.get('/', authenticateUser, Elements)
 
 
 

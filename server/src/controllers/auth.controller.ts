@@ -14,7 +14,7 @@ export const createUser = async (req: Request, res: Response) => {
         // Verificar que el email no haya sido usado previamente
         const validationInfo = await existsUser(email);
 
-        if(!validationInfo){
+        if(validationInfo){
             return res.status(409).json({
                 error: true,
                 message: 'El email ya esta siendo utilizado por otro usuario'
@@ -69,7 +69,7 @@ export const loginUser = async (req: Request, res: Response) => {
         }
 
         //3. Verificar la informacion ingresada por el usuario
-        const validateData = compareHash(password, userExists.password_hash)
+        const validateData = await compareHash(password, userExists.password_hash)
 
         if(!validateData) {
             return res.status(409).json({

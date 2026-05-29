@@ -5,7 +5,7 @@ import { authenticateUser } from '../middlewares/auth.middleware.js';
 const router = express.Router()
 
 // Ruta para traer todas las identidades
-router.get('/Identities', authenticateUser, Identities)
+router.get('/', authenticateUser, Identities)
 
 
 

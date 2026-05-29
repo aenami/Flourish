@@ -1,11 +1,11 @@
 import express from 'express'
 // Importamos metodos de nuestro controlador
-import { Habits } from '../controllers/habits.controller';
+import { Habits } from '../controllers/habits.controller.js';
 import { authenticateUser } from '../middlewares/auth.middleware.js';
 const router = express.Router()
 
 // Ruta para traer todos los habitos y la información mas relevante relacionada a estos
-router.get('/Habits', authenticateUser, Habits)
+router.get('/', authenticateUser, Habits)
 
 
 
