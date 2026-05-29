@@ -12,7 +12,7 @@ const app = express()
 // ------- Settings de nuestro backend
 app.set('case sensitive routing', true)
 app.set('appName', 'Express app')
-app.set('port', process.env.PORT) // -----TRAER EL PUERTO CON UNA VARIBALE DE ENTORNO
+app.set('port', process.env.PORT ?? 3000) // -----TRAER EL PUERTO CON UNA VARIBALE DE ENTORNO
 
 
 // ------- MIDDLEWARES ------

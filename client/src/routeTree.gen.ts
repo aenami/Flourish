@@ -9,12 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as IdentitiesIndexRouteImport } from './routes/Identities/index'
 import { Route as HomeIndexRouteImport } from './routes/Home/index'
 import { Route as HabitsIndexRouteImport } from './routes/Habits/index'
 import { Route as ElementsIndexRouteImport } from './routes/Elements/index'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +55,8 @@ const ElementsIndexRoute = ElementsIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/Elements/': typeof ElementsIndexRoute
   '/Habits/': typeof HabitsIndexRoute
   '/Home/': typeof HomeIndexRoute
@@ -50,6 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/Elements': typeof ElementsIndexRoute
   '/Habits': typeof HabitsIndexRoute
   '/Home': typeof HomeIndexRoute
@@ -58,6 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/Elements/': typeof ElementsIndexRoute
   '/Habits/': typeof HabitsIndexRoute
   '/Home/': typeof HomeIndexRoute
@@ -65,14 +83,38 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/Elements/' | '/Habits/' | '/Home/' | '/Identities/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/Elements/'
+    | '/Habits/'
+    | '/Home/'
+    | '/Identities/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/Elements' | '/Habits' | '/Home' | '/Identities'
-  id: '__root__' | '/' | '/Elements/' | '/Habits/' | '/Home/' | '/Identities/'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/Elements'
+    | '/Habits'
+    | '/Home'
+    | '/Identities'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/register'
+    | '/Elements/'
+    | '/Habits/'
+    | '/Home/'
+    | '/Identities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   ElementsIndexRoute: typeof ElementsIndexRoute
   HabitsIndexRoute: typeof HabitsIndexRoute
   HomeIndexRoute: typeof HomeIndexRoute
@@ -81,6 +123,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   ElementsIndexRoute: ElementsIndexRoute,
   HabitsIndexRoute: HabitsIndexRoute,
   HomeIndexRoute: HomeIndexRoute,

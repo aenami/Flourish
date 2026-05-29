@@ -10,6 +10,20 @@ export const createUser = async (req: Request, res: Response) => {
     const {username, email, password } = req.body
 
     try {
+        if (!username || !email || !password) {
+            return res.status(400).json({
+                error: true,
+                message: 'Nombre, email y contraseña son obligatorios'
+            })
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({
+                error: true,
+                message: 'La contraseña debe tener minimo 8 caracteres'
+            })
+        }
+
         //-------------- Validaciones previas a la insercion
         // Verificar que el email no haya sido usado previamente
         const validationInfo = await existsUser(email);
@@ -26,17 +40,27 @@ export const createUser = async (req: Request, res: Response) => {
         const hashedPassword = await hashPassword(password);
 
         //2. Intentamos insertar el usuario
-        await prisma.usuario.create({
+        const user = await prisma.usuario.create({
             data: {
                 nombre_usuario: username,
                 email_usuario: email,
                 password_hash: hashedPassword,
+                habitacion_usuario: {
+                    create: {}
+                },
             }
         })
 
+        const token = generateToken(user.id_usuario)
+
         res.status(201).json({
             error: false,
-            message: 'Usuario creado con exito'
+            message: 'Usuario creado con exito',
+            token: token,
+            user: {
+                id: user.id_usuario,
+                nombre: user.nombre_usuario,
+            }
         })
         
     } catch (error) {
@@ -53,6 +77,13 @@ export const loginUser = async (req: Request, res: Response) => {
     try {
         //1. Extraemos la informacion del formulario
         const {email, password} = req.body
+
+        if (!email || !password) {
+            return res.status(400).json({
+                error: true,
+                message: 'Email y contraseña son obligatorios'
+            })
+        }
 
         //2. Verificamos que el usuario exista en la db
         const userExists = await prisma.usuario.findFirst({

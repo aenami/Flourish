@@ -4,7 +4,7 @@ import prisma from './lib/prisma.js'
 
 dotenv.config() // Inicializamos variables de entorno en este archivo para todo el proyecto
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT ?? 3000;
 
 // Funcion principal
 const startServer = async () => {
