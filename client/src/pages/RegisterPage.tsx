@@ -45,8 +45,8 @@ export function RegisterPage() {
   }
 
   return (
-    <main className="grid min-h-screen overflow-hidden bg-[#121416] text-[#e2e2e5] lg:grid-cols-[1fr_1fr]">
-      <section className="relative min-h-120 overflow-hidden bg-[radial-gradient(circle_at_35%_44%,rgba(172,206,191,0.1),transparent_18rem),linear-gradient(90deg,#0c0e10_0%,#121416_100%)] p-5 lg:min-h-screen lg:p-10">
+    <main className="grid min-h-screen overflow-hidden bg-surface font-sans text-on-surface lg:grid-cols-[1fr_1fr]">
+      <section className="relative min-h-120 overflow-hidden bg-[radial-gradient(circle_at_35%_44%,rgba(172,206,191,0.1),transparent_18rem),linear-gradient(90deg,var(--color-surface-container-lowest)_0%,var(--color-surface)_100%)] p-5 lg:min-h-screen lg:p-10">
         <AuthBrand compact />
 
         <div className="absolute -left-8 -top-10 h-136 w-136 rounded-t-full border border-white/5 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.045)_0,rgba(255,255,255,0.045)_2px,transparent_2px,transparent_13px),linear-gradient(90deg,rgba(12,14,16,0.8),rgba(40,42,44,0.32))]" />
@@ -54,28 +54,28 @@ export function RegisterPage() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,14,16,0.5),transparent_50%,rgba(12,14,16,0.35))]" />
 
         <article className="absolute bottom-9 left-5 right-5 z-10 lg:bottom-16 lg:left-10 lg:right-20">
-          <h1 className="max-w-[160 font-['Manrope'] text-[2.3rem] font-bold leading-[1.08] tracking-normal text-[#e2e2e5] md:text-[3rem] lg:text-[3.25rem]">
-            Construye tu <span className="text-[#f7bb7e]">Habitacion.</span>
+          <h1 className="max-w-160 font-sans text-[2.3rem] font-bold leading-[1.08] tracking-normal text-on-surface md:text-[3rem] lg:text-[3.25rem]">
+            Construye tu <span className="text-primary">Habitacion.</span>
             <br />
-            Forja tus <span className="text-[#f7bb7e]">Identidades.</span>
+            Forja tus <span className="text-primary">Identidades.</span>
           </h1>
-          <p className="mt-5 max-w-140 font-['Manrope'] text-base leading-7 text-[#d5c3b5]">
+          <p className="mt-5 max-w-140 font-sans text-base leading-7 text-on-surface-variant">
             Mas que una lista de tareas, un refugio digital para tu introspeccion. Comienza el viaje para alinear tus
             acciones diarias con la persona en la que deseas convertirte.
           </p>
         </article>
       </section>
 
-      <section className="grid min-h-screen place-items-center bg-[radial-gradient(circle_at_50%_62%,rgba(247,187,126,0.08),transparent_21rem),linear-gradient(120deg,#121416_0%,#1a1c1e_100%)] px-5 py-10 lg:px-10">
-        <div className="w-full max-w-94 rounded-2xl border border-white/10 bg-[#1e2022]/90 p-7 shadow-[0_28px_80px_rgba(0,0,0,0.38),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl">
+      <section className="grid min-h-screen place-items-center bg-[radial-gradient(circle_at_50%_62%,rgba(247,187,126,0.08),transparent_21rem),linear-gradient(120deg,var(--color-surface)_0%,var(--color-surface-container-low)_100%)] px-5 py-10 lg:px-10">
+        <div className="w-full max-w-104 rounded-2xl border border-white/10 bg-surface-container/90 p-8 shadow-[0_28px_80px_rgba(0,0,0,0.38),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl">
           <header className="mb-6">
-            <h2 className="font-['Manrope'] text-[1.55rem] font-bold leading-tight tracking-normal text-[#e2e2e5]">
+            <h2 className="font-sans text-[1.55rem] font-bold leading-tight tracking-normal text-on-surface">
               Bienvenido a tu Espacio
             </h2>
-            <p className="mt-2 font-['Manrope'] text-sm text-[#d5c3b5]">Inicia tu proceso de evolucion personal.</p>
+            <p className="mt-2 font-sans text-sm text-on-surface-variant">Inicia tu proceso de evolucion personal.</p>
           </header>
 
-          <form className="grid gap-4" onSubmit={handleSubmit}>
+          <form className="grid gap-5" onSubmit={handleSubmit}>
             <AuthField
               compact
               autoComplete="name"
@@ -121,13 +121,13 @@ export function RegisterPage() {
             />
 
             {errorMessage ? (
-              <p className="rounded-lg border border-[#ffb4ab]/30 bg-[#93000a]/20 p-3 font-['Manrope'] text-sm leading-5 text-[#ffdad6]">
+              <p className="rounded-lg border border-error/30 bg-error-container/20 p-3 font-sans text-sm leading-5 text-on-error-container">
                 {errorMessage}
               </p>
             ) : null}
 
             <button
-              className="mt-1 inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-lg bg-[#f7bb7e] px-4 font-['Plus_Jakarta_Sans'] text-sm font-bold text-[#492900] shadow-[0_18px_40px_rgba(247,187,126,0.16)] transition hover:-translate-y-0.5 hover:bg-[#ffdcbd] disabled:translate-y-0 disabled:opacity-70"
+              className="mt-1 inline-flex min-h-13 w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 font-label text-[15px] font-bold text-on-primary shadow-[0_18px_40px_rgba(247,187,126,0.16)] transition hover:-translate-y-0.5 hover:bg-primary-fixed disabled:translate-y-0 disabled:opacity-70"
               disabled={isSubmitting}
               type="submit"
             >
@@ -136,9 +136,9 @@ export function RegisterPage() {
             </button>
           </form>
 
-          <p className="mt-5 text-center font-['Manrope'] text-sm text-[#d5c3b5]">
+          <p className="mt-5 text-center font-sans text-sm text-on-surface-variant">
             Ya tienes una habitacion?{' '}
-            <Link className="font-bold text-[#f7bb7e] transition hover:text-[#ffdcbd]" to="/login">
+            <Link className="font-bold text-primary transition hover:text-primary-fixed" to="/login">
               Ingresar
             </Link>
           </p>

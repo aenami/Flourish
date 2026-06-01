@@ -18,7 +18,7 @@ export function AuthPasswordToggle({
   return (
     <button
       aria-label={isVisible ? labelWhenVisible : labelWhenHidden}
-      className="grid size-9 place-items-center rounded-lg text-[#d5c3b5] transition hover:bg-[#f7bb7e]/10 hover:text-[#f7bb7e]"
+      className="grid size-9 place-items-center rounded-lg text-on-surface-variant transition hover:bg-primary/10 hover:text-primary"
       onClick={onToggle}
       type="button"
     >

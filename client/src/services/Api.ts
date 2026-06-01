@@ -3,6 +3,18 @@ import { tokenManager } from "../utils/tokenManager";
 // URL base sobre la cual construiremos la direccion de nuestras peticiones.
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+type ApiErrorResponse = {
+    message?: unknown;
+};
+
+const getReadableMessage = (message: unknown, fallback: string) => {
+    if (typeof message === "string" && message.trim()) return message;
+
+    if (message instanceof Error) return message.message;
+
+    return fallback;
+};
+
 // Funcion que se encarga de crear todos los headers necesarios para cada peticion.
 const buildHeaders = (isPublic = false): Record<string, string> => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -24,8 +36,8 @@ const handleResponse = async (response: Response) => {
             window.location.href = "/login";
         }
 
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.message || `Error ${response.status}`);
+        const error = (await response.json().catch(() => ({}))) as ApiErrorResponse;
+        throw new Error(getReadableMessage(error.message, `Error ${response.status}`));
     }
 
     return response.json();
