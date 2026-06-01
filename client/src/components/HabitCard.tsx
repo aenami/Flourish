@@ -40,6 +40,11 @@ export function HabitCard({ habit }: HabitCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
+  // Estados locales para la interacción de Check y Recaída en tiempo real
+  const [isCheckedToday, setIsCheckedToday] = useState(false)
+  const [isRelapsedToday, setIsRelapsedToday] = useState(false)
+  const [currentMomentum, setCurrentMomentum] = useState(habit.momentum_habito)
+
   // Cerrar el menú de tres puntos si se hace clic afuera
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -53,7 +58,6 @@ export function HabitCard({ habit }: HabitCardProps) {
 
   const isPositive = habit.tipo_habito === 'POSITIVO'
   const sys = habit.sistema_habito
-  const momentum = habit.momentum_habito
 
   // Mapear días en español
   const daysOfWeek = [
@@ -65,6 +69,13 @@ export function HabitCard({ habit }: HabitCardProps) {
     { label: 'S', value: 6 },
     { label: 'D', value: 7 },
   ]
+
+  // Obtener el día actual (Lunes = 1, Domingo = 7)
+  const todayIndex = new Date().getDay()
+  const todayValue = todayIndex === 0 ? 7 : todayIndex
+
+  // Filtrar los días para mostrar ÚNICAMENTE los que el usuario definió
+  const activeDays = daysOfWeek.filter((day) => habit.dias_semana.includes(day.value))
 
   // Elegir icono por nombre de hábito de forma inteligente
   const getIcon = () => {
@@ -178,20 +189,38 @@ export function HabitCard({ habit }: HabitCardProps) {
 
       {/* Sección Intermedia: Progreso, Días y Botón */}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/5 pt-4">
-        {/* Días Programados */}
+        {/* Días Programados (ÚNICAMENTE LOS DEFINIDOS POR EL USUARIO) */}
         <div className="flex items-center gap-1.5">
-          {daysOfWeek.map((day) => {
-            const isScheduled = habit.dias_semana.includes(day.value)
+          {activeDays.map((day) => {
+            const isToday = day.value === todayValue
+            const isCompleted = isToday && isCheckedToday
+            const isRelapsed = isToday && isRelapsedToday
+
+            // Clases de estilo dinámicas para el día programado
+            let dayStyleClass = ''
+            if (isPositive) {
+              if (isCompleted) {
+                // Si el día es hoy y ya se hizo check: brilla intensamente
+                dayStyleClass = 'bg-secondary text-on-secondary shadow-[0_0_15px_rgba(172,206,191,0.7)] border-none'
+              } else {
+                // Días definidos pero no completados / días pasados/futuros programados
+                dayStyleClass = 'bg-secondary/10 text-secondary border border-secondary/15 hover:bg-secondary/20'
+              }
+            } else {
+              if (isRelapsed) {
+                // Si hubo recaída hoy: brilla en rojo
+                dayStyleClass = 'bg-error text-on-error shadow-[0_0_15px_rgba(255,180,171,0.7)] border-none'
+              } else {
+                // Hábito negativo evitado correctamente
+                dayStyleClass = 'bg-error/10 text-error border border-error/15 hover:bg-error/20'
+              }
+            }
+
             return (
               <span
                 key={day.label}
-                className={`grid size-6 place-items-center rounded-full font-label text-[10px] font-bold transition duration-200 ${
-                  isScheduled
-                    ? isPositive
-                      ? 'bg-secondary/15 text-secondary shadow-[0_0_10px_rgba(172,206,191,0.06)]'
-                      : 'bg-error/15 text-error shadow-[0_0_10px_rgba(255,180,171,0.06)]'
-                    : 'bg-white/2 text-on-surface-variant/40'
-                }`}
+                className={`grid size-7 place-items-center rounded-full font-label text-[10.5px] font-bold transition duration-300 ${dayStyleClass}`}
+                title={isToday ? 'Día de hoy' : 'Día programado'}
               >
                 {day.label}
               </span>
@@ -202,7 +231,7 @@ export function HabitCard({ habit }: HabitCardProps) {
         {/* Momentum & Progreso */}
         <div className="flex-1 min-w-32">
           <div className="flex items-baseline justify-between font-label text-xs">
-            <span className="font-bold text-on-surface">{momentum}%</span>
+            <span className="font-bold text-on-surface">{currentMomentum}%</span>
             <span className="font-bold tracking-wider text-on-surface-variant/60 uppercase text-[9px]">
               MOMENTUM
             </span>
@@ -215,7 +244,7 @@ export function HabitCard({ habit }: HabitCardProps) {
                   ? 'bg-linear-to-r from-secondary/80 to-secondary shadow-[0_0_10px_rgba(172,206,191,0.25)]'
                   : 'bg-linear-to-r from-error/80 to-error shadow-[0_0_10px_rgba(255,180,171,0.25)]'
               }`}
-              style={{ width: `${Math.max(momentum, 2)}%` }}
+              style={{ width: `${Math.max(currentMomentum, 2)}%` }}
             />
           </div>
         </div>
@@ -223,19 +252,39 @@ export function HabitCard({ habit }: HabitCardProps) {
         {/* Botón de Acción */}
         {isPositive ? (
           <button
-            onClick={() => alert('¡Hábito marcado como completado! +XP ganado.')}
-            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 font-label text-xs font-bold text-on-primary shadow-[0_8px_20px_rgba(247,187,126,0.12)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-fixed"
+            onClick={() => {
+              if (!isCheckedToday) {
+                setIsCheckedToday(true)
+                setCurrentMomentum((prev) => Math.min(prev + 10, 100))
+              }
+            }}
+            disabled={isCheckedToday}
+            className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-lg px-4 font-label text-xs font-bold transition duration-200 ${
+              isCheckedToday
+                ? 'bg-secondary/15 text-secondary border border-secondary/20 cursor-not-allowed shadow-none'
+                : 'bg-primary text-on-primary shadow-[0_8px_20px_rgba(247,187,126,0.12)] hover:-translate-y-0.5 hover:bg-primary-fixed'
+            }`}
           >
             <CheckCircle size={14} />
-            <span>Check</span>
+            <span>{isCheckedToday ? 'Completado' : 'Check'}</span>
           </button>
         ) : (
           <button
-            onClick={() => alert('Recaída registrada. Tu momentum bajará ligeramente.')}
-            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-error/20 bg-error/5 px-4 font-label text-xs font-bold text-error transition duration-200 hover:bg-error/15 hover:border-error/30"
+            onClick={() => {
+              if (!isRelapsedToday) {
+                setIsRelapsedToday(true)
+                setCurrentMomentum((prev) => Math.max(prev - 10, 0))
+              }
+            }}
+            disabled={isRelapsedToday}
+            className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border px-4 font-label text-xs font-bold transition duration-200 ${
+              isRelapsedToday
+                ? 'border-error/10 bg-error/5 text-error-container/40 cursor-not-allowed'
+                : 'border-error/20 bg-error/5 text-error hover:bg-error/15 hover:border-error/30 hover:-translate-y-0.5'
+            }`}
           >
             <AlertTriangle size={14} />
-            <span>Recaída</span>
+            <span>{isRelapsedToday ? 'Recaída registrada' : 'Recaída'}</span>
           </button>
         )}
       </div>
