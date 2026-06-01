@@ -22,6 +22,11 @@ app.use(cors( {
 app.use(express.json())
 app.use(express.urlencoded( {extended: false} ))
 
+app.use((req, res, next) => {
+  console.log(`\n=== PETICION RECIBIDA: ${req.method} ${req.path} ===`);
+  next();
+});
+
 
 // ------- RUTAS CREADAS -----
 app.use('/auth', authRoutes)
