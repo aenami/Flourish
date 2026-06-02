@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { AlertCircle, BookOpen, Brain, Dumbbell, Fingerprint, Flame, Plus, Sparkles, TrendingUp } from 'lucide-react'
+import { AlertCircle, BookOpen, Brain, Dumbbell, Fingerprint, Plus, Sparkles, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { DashboardLayout } from '#/components/DashboardLayout'
@@ -52,7 +52,7 @@ function IdentitiesPage() {
     if (lowercaseName.includes('lector') || lowercaseName.includes('leer') || lowercaseName.includes('lectura')) {
       return {
         subtitle: 'Sabiduría y Enfoque',
-        icon: <BookOpen size={20} className="text-[#accebf]" />,
+        icon: <BookOpen size={20} className="text-secondary" />,
         iconBg: 'bg-[#1b2b24] border border-[#2e5241]/35',
         themeProgressBg: 'bg-[#accebf]',
         themeCircleStroke: 'stroke-[#accebf]',
@@ -78,7 +78,7 @@ function IdentitiesPage() {
     // Default / Personalizado
     return {
       subtitle: 'Disciplina y Crecimiento',
-      icon: <Sparkles size={20} className="text-[#f7bb7e]" />,
+      icon: <Sparkles size={20} className="text-primary" />,
       iconBg: 'bg-[#2f271d] border border-[#4d3d2c]/35',
       themeProgressBg: 'bg-[#f7bb7e]',
       themeCircleStroke: 'stroke-[#f7bb7e]',
@@ -115,9 +115,9 @@ function IdentitiesPage() {
       {isLoading ? (
         // Skeleton Loader
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="h-96 rounded-[24px] bg-white/[0.02] animate-pulse border border-white/5" />
-          <div className="h-96 rounded-[24px] bg-white/[0.02] animate-pulse border border-white/5" />
-          <div className="h-96 rounded-[24px] bg-white/[0.02] animate-pulse border border-white/5" />
+          <div className="h-96 rounded-3xl bg-white/2 animate-pulse border border-white/5" />
+          <div className="h-96 rounded-3xl bg-white/2 animate-pulse border border-white/5" />
+          <div className="h-96 rounded-3xl bg-white/2 animate-pulse border border-white/5" />
         </div>
       ) : error ? (
         // Error State
@@ -151,7 +151,7 @@ function IdentitiesPage() {
           {/* Botón Card Placeholder */}
           <div 
             onClick={() => alert('¡Pronto! Podrás forjar y personalizar tus identidades en la siguiente fase de desarrollo.')}
-            className="mt-8 border border-dashed border-white/10 rounded-2xl bg-white/[0.01] hover:bg-white/[0.03] hover:border-primary/30 p-6 transition flex items-center gap-4 text-left cursor-pointer group"
+            className="mt-8 border border-dashed border-white/10 rounded-2xl bg-white/1 hover:bg-white/3 hover:border-primary/30 p-6 transition flex items-center gap-4 text-left cursor-pointer group"
           >
             <div className="grid size-11 place-items-center rounded-xl bg-white/5 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary transition duration-200">
               <Plus size={20} strokeWidth={2.4} />
@@ -178,14 +178,14 @@ function IdentitiesPage() {
             return (
               <div 
                 key={identity.id_identidad}
-                className={`group relative overflow-hidden rounded-[24px] border border-white/5 bg-[#18191b] shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:border-white/10 hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)] ${details.glowStyle}`}
+                className={`group relative overflow-hidden rounded-3xl border border-white/5 bg-[#18191b] shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:border-white/10 hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)] ${details.glowStyle}`}
               >
                 {/* 1. Imagen / Contenedor Superior (Fondo Oscuro Estilizado con Rejilla Isométrica) */}
                 <div className="w-full h-44 relative border-b border-white/5">
                   {/* Contenedor interno recortado con overflow-hidden */}
                   <div className="absolute inset-0 rounded-t-[22px] overflow-hidden">
                     {/* Gradiente oscuro profundo de fondo */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d]" />
+                    <div className="absolute inset-0 bg-linear-to-br from-[#1c1e20] to-[#0a0c0d]" />
                     
                     {/* Rejilla Isométrica Blueprint de fondo */}
                     <div className="absolute inset-0 opacity-15">
@@ -203,7 +203,7 @@ function IdentitiesPage() {
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
 
                     {/* Gradiente de difuminación (Fade-out) en la parte inferior para fusionar suavemente la imagen con la tarjeta */}
-                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#18191b] via-[#18191b]/50 to-transparent pointer-events-none z-10" />
+                    <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-[#18191b] via-[#18191b]/50 to-transparent pointer-events-none z-10" />
                   </div>
 
                   {/* Icono de Círculo Flotante Solapado (colocado fuera del div con overflow-hidden para evitar cortes y con z-20 alto) */}
@@ -236,7 +236,7 @@ function IdentitiesPage() {
                   </div>
 
                   {/* Sección de Momentum con Indicador Circular */}
-                  <div className="my-6 flex items-center gap-3.5 bg-white/[0.015] border border-white/5 rounded-2xl p-3 shadow-inner">
+                  <div className="my-6 flex items-center gap-3.5 bg-white/1.5 border border-white/5 rounded-2xl p-3 shadow-inner">
                     <div className="relative size-9 flex items-center justify-center">
                       {/* SVG Circular Progress Ring */}
                       <svg className="size-9 -rotate-90">
@@ -298,7 +298,7 @@ function IdentitiesPage() {
           {/* 4. Tarjeta placeholder "Nueva Identidad" matching the mockup */}
           <div 
             onClick={() => alert('¡Pronto! En la siguiente fase de desarrollo podrás forjar y personalizar tus identidades.')}
-            className="group min-h-[380px] rounded-[24px] border border-dashed border-white/10 hover:border-primary/30 bg-white/[0.005] hover:bg-white/[0.015] p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
+            className="group min-h-95 rounded-3xl border border-dashed border-white/10 hover:border-primary/30 bg-white/0.5 hover:bg-white/1.5 p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
           >
             {/* Botón Circular Central con Doble Anillo */}
             <div className="size-12 rounded-full border border-white/10 bg-white/4 flex items-center justify-center text-on-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-all duration-300 group-hover:scale-105 group-hover:bg-white/8 group-hover:border-primary/30 group-hover:text-primary">
@@ -309,7 +309,7 @@ function IdentitiesPage() {
               Nueva Identidad
             </h3>
             
-            <p className="mt-2 font-sans text-xs leading-relaxed text-on-surface-variant/50 max-w-[200px]">
+            <p className="mt-2 font-sans text-xs leading-relaxed text-on-surface-variant/50 max-w-50">
               Crea nuevas identidades al definir tus hábitos
             </p>
           </div>

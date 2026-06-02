@@ -24,6 +24,7 @@ import {
   Smartphone,
   Sparkles,
   Timer,
+  AlertTriangle,
 } from 'lucide-react'
 import { useState } from 'react'
 import { api } from '#/services/Api'
@@ -72,6 +73,9 @@ export function CreatePositiveForm({
   refreshIdentities,
   usedElementNames,
 }: CreatePositiveFormProps) {
+  // Estado para mensajes de error de validación
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
   // Formulario de Creación
   const [nombreHabito, setNombreHabito] = useState('')
   const [idIdentidad, setIdIdentidad] = useState('')
@@ -157,18 +161,19 @@ export function CreatePositiveForm({
   }
 
   const handleSaveHabit = async () => {
+    setErrorMessage(null)
     if (!nombreHabito.trim()) {
-      alert('Por favor, introduce el nombre del hábito')
+      setErrorMessage('Por favor, introduce el nombre del hábito')
       return
     }
 
     if (selectedDays.length === 0) {
-      alert('Por favor, selecciona al menos un día programado')
+      setErrorMessage('Por favor, selecciona al menos un día programado')
       return
     }
 
     if (!senal.trim() || !accion.trim()) {
-      alert('Por favor, completa los campos de La Señal y La Acción en la sección Diseña el Sistema')
+      setErrorMessage('Por favor, completa los campos de La Señal y La Acción en la sección Diseña el Sistema')
       return
     }
 
@@ -193,7 +198,7 @@ export function CreatePositiveForm({
         onSaveSuccess()
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error al guardar el hábito')
+      setErrorMessage(err instanceof Error ? err.message : 'Error al guardar el hábito')
     }
   }
 
@@ -219,6 +224,24 @@ export function CreatePositiveForm({
         </button>
       </header>
 
+      {errorMessage && (
+        <div className="mt-6 max-w-3xl mx-auto px-4">
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-error/25 bg-error/10 p-4 text-sm text-error relative overflow-hidden backdrop-blur-md">
+            <div className="flex items-center gap-3">
+              <AlertTriangle size={18} className="shrink-0" />
+              <span className="font-sans font-medium text-left leading-normal">{errorMessage}</span>
+            </div>
+            <button 
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="text-error/60 hover:text-error transition font-sans font-bold text-xs px-2 py-1 rounded-lg hover:bg-error/10 cursor-pointer"
+            >
+              Descartar
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Bloque de Títulos del Formulario */}
       <div className="mt-12 text-center max-w-2xl mx-auto px-4">
         <h2 className="font-sans text-3xl font-extrabold text-on-surface tracking-tight md:text-4xl">
@@ -233,9 +256,9 @@ export function CreatePositiveForm({
       <div className="mt-12 max-w-3xl mx-auto space-y-8 mb-20 px-4">
         
         {/* SECCIÓN 1: Define tu Identidad */}
-        <div className="relative overflow-hidden rounded-[24px] border border-white/5 bg-[#18191b] p-6 shadow-xl border-l-4 border-[#f7bb7e]">
+        <div className="relative overflow-hidden rounded-3xl border bg-[#18191b] p-6 shadow-xl border-l-4 border-primary">
           <div className="flex items-start gap-4">
-            <div className="grid size-10 place-items-center rounded-xl bg-[#2f271d] text-[#f7bb7e] border border-[#4d3d2c]/35 shadow-md">
+            <div className="grid size-10 place-items-center rounded-xl bg-[#2f271d] text-primary border border-[#4d3d2c]/35 shadow-md">
               <Fingerprint size={20} />
             </div>
             <div className="flex-1">
@@ -302,7 +325,7 @@ export function CreatePositiveForm({
                           className={`flex flex-col items-center justify-center p-3 rounded-xl border transition duration-200 cursor-pointer ${
                             isSelected
                               ? 'border-primary bg-primary/10 text-primary shadow-[0_0_12px_rgba(247,187,126,0.12)]'
-                              : 'border-white/5 bg-surface-container-lowest text-on-surface-variant/80 hover:border-white/10 hover:bg-white/[0.02] hover:text-on-surface'
+                              : 'border-white/5 bg-surface-container-lowest text-on-surface-variant/80 hover:border-white/10 hover:bg-white/2 hover:text-on-surface'
                           }`}
                         >
                           <IconComp size={20} />
@@ -347,9 +370,9 @@ export function CreatePositiveForm({
         </div>
 
         {/* SECCIÓN 2: Diseña el Sistema */}
-        <div className="relative overflow-hidden rounded-[24px] border border-white/5 bg-[#18191b] p-6 shadow-xl border-l-4 border-[#accebf]">
+        <div className="relative overflow-hidden rounded-3xl border  bg-[#18191b] p-6 shadow-xl border-l-4 border-secondary">
           <div className="flex items-start gap-4">
-            <div className="grid size-10 place-items-center rounded-xl bg-[#1b2b24] text-[#accebf] border border-[#2e5241]/35 shadow-md">
+            <div className="grid size-10 place-items-center rounded-xl bg-[#1b2b24] text-secondary border border-[#2e5241]/35 shadow-md">
               <Settings size={20} />
             </div>
             <div className="flex-1">
@@ -419,7 +442,7 @@ export function CreatePositiveForm({
         </div>
 
         {/* SECCIÓN 3: Manifiesto Visual */}
-        <div className="relative overflow-hidden rounded-[24px] border border-white/5 bg-[#18191b] p-6 shadow-xl border-l-4 border-[#ebc246]">
+        <div className="relative overflow-hidden rounded-3xl border  bg-[#18191b] p-6 shadow-xl border-l-4 border-[#ebc246]">
           <div className="flex items-start gap-4">
             <div className="grid size-10 place-items-center rounded-xl bg-[#332a15] text-[#ebc246] border border-[#594924]/35 shadow-md">
               <Award size={20} />
@@ -445,7 +468,7 @@ export function CreatePositiveForm({
                         className="relative rounded-2xl border border-white/5 bg-surface-container-lowest/30 p-3 text-center opacity-40 cursor-not-allowed"
                         title="Este elemento ya se encuentra asociado a otro hábito activo."
                       >
-                        <div className="aspect-square rounded-xl bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d] relative flex items-center justify-center overflow-hidden border border-white/5 mb-3">
+                        <div className="aspect-square rounded-xl bg-linear-to-br from-[#1c1e20] to-[#0a0c0d] relative flex items-center justify-center overflow-hidden border border-white/5 mb-3">
                           <Icon size={24} className="text-on-surface-variant/20" />
                         </div>
                         <span className="font-sans text-xs font-bold text-on-surface-variant/60 block truncate">
@@ -465,10 +488,10 @@ export function CreatePositiveForm({
                       className={`group rounded-2xl border bg-surface-container-lowest p-3 text-center cursor-pointer transition-all duration-300 ${
                         isSelected
                           ? 'border-primary shadow-[0_0_15px_rgba(247,187,126,0.15)] bg-surface-container/60'
-                          : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02]'
+                          : 'border-white/5 hover:border-white/10 hover:bg-white/2'
                       }`}
                     >
-                      <div className="aspect-square rounded-xl bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d] relative flex items-center justify-center overflow-hidden border border-white/5 mb-3">
+                      <div className="aspect-square rounded-xl bg-linear-to-br from-[#1c1e20] to-[#0a0c0d] relative flex items-center justify-center overflow-hidden border border-white/5 mb-3">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
                         <Icon size={24} className={`${elem.iconColor} group-hover:scale-110 transition duration-300`} />
                       </div>

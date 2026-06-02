@@ -12,6 +12,14 @@ export const Elements = async (req: Request, res: Response) => {
                 habito: {
                     id_usuario_habito: idUser
                 }
+            },
+            include: {
+                habito: {
+                    select: {
+                        nombre_habito: true,
+                        tipo_habito: true
+                    }
+                }
             }
         })
 

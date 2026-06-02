@@ -3,9 +3,10 @@ import { ArrowLeft, ArrowRight, Ban, Plus, TrendingUp } from 'lucide-react'
 interface CreateSelectViewProps {
   onBack: () => void
   onSelectPositive: () => void
+  onSelectNegative: () => void
 }
 
-export function CreateSelectView({ onBack, onSelectPositive }: CreateSelectViewProps) {
+export function CreateSelectView({ onBack, onSelectPositive, onSelectNegative }: CreateSelectViewProps) {
   return (
     <div className="w-full">
       {/* Botón superior izquierdo de retroceso */}
@@ -42,7 +43,7 @@ export function CreateSelectView({ onBack, onSelectPositive }: CreateSelectViewP
           {/* Opción 1: Hábito Positivo */}
           <div 
             onClick={onSelectPositive}
-            className="group relative overflow-hidden rounded-[24px] border border-white/5 bg-[#18191b] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:border-white/10 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45)] hover:bg-[#1e2022] cursor-pointer"
+            className="group relative overflow-hidden rounded-3x1 border border-white/5 bg-[#18191b] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:border-white/10 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45)] hover:bg-surface cursor-pointer"
           >
             <div className="size-12 rounded-xl bg-secondary/10 border border-secondary/15 flex items-center justify-center text-secondary mb-6 shadow-[0_0_15px_rgba(172,206,191,0.04)]">
               <TrendingUp size={22} />
@@ -50,10 +51,10 @@ export function CreateSelectView({ onBack, onSelectPositive }: CreateSelectViewP
             <h3 className="font-sans text-xl font-bold text-on-surface tracking-tight">
               Crear Hábito Positivo
             </h3>
-            <p className="mt-3 font-sans text-xs leading-relaxed text-on-surface-variant/60 font-medium leading-normal">
+            <p className="mt-3 font-sans text-xs text-on-surface-variant/60 font-medium leading-normal">
               Construye una nueva identidad paso a paso. Añade una acción constructiva a tu rutina diaria que te acerque a tus metas a largo plazo.
             </p>
-            <div className="mt-8 inline-flex items-center gap-1 font-label text-xs font-bold text-[#f7bb7e] group-hover:text-primary-fixed transition duration-200">
+            <div className="mt-8 inline-flex items-center gap-1 font-label text-xs font-bold text-primary group-hover:text-primary-fixed transition duration-200">
               <span>Empezar a construir</span>
               <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
             </div>
@@ -61,8 +62,8 @@ export function CreateSelectView({ onBack, onSelectPositive }: CreateSelectViewP
 
           {/* Opción 2: Hábito Negativo */}
           <div 
-            onClick={() => alert('¡Pronto! En la siguiente fase diseñaremos el formulario de hábitos negativos.')}
-            className="group relative overflow-hidden rounded-[24px] border border-white/5 bg-[#18191b] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:border-white/10 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45)] hover:bg-[#1e2022] cursor-pointer"
+            onClick={onSelectNegative}
+            className="group relative overflow-hidden rounded-3xl border border-white/5 bg-[#18191b] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1.5 hover:border-white/10 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45)] hover:bg-surface-container cursor-pointer"
           >
             <div className="size-12 rounded-xl bg-error/10 border border-error/15 flex items-center justify-center text-error mb-6 shadow-[0_0_15px_rgba(255,180,171,0.04)]">
               <Ban size={20} />
@@ -70,10 +71,10 @@ export function CreateSelectView({ onBack, onSelectPositive }: CreateSelectViewP
             <h3 className="font-sans text-xl font-bold text-on-surface tracking-tight">
               Eliminar Hábito Negativo
             </h3>
-            <p className="mt-3 font-sans text-xs leading-relaxed text-on-surface-variant/60 font-medium leading-normal">
+            <p className="mt-3 font-sans text-xs text-on-surface-variant/60 font-medium leading-normal">
               Rompe un ciclo que ya no te sirve. Identifica las señales, interrumpe la rutina y recupera el control sobre tus acciones automáticas.
             </p>
-            <div className="mt-8 inline-flex items-center gap-1 font-label text-xs font-bold text-[#f7bb7e] group-hover:text-primary-fixed transition duration-200">
+            <div className="mt-8 inline-flex items-center gap-1 font-label text-xs font-bold text-primary group-hover:text-primary-fixed transition duration-200">
               <span>Comenzar a romper</span>
               <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
             </div>

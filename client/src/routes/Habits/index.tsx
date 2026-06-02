@@ -8,6 +8,7 @@ import type { HabitData } from '#/components/HabitCard'
 import { api } from '#/services/Api'
 import { CreateSelectView } from './components/-CreateSelectView'
 import { CreatePositiveForm } from './components/-CreatePositiveForm'
+import { CreateNegativeForm } from './components/-CreateNegativeForm'
 
 export const Route = createFileRoute('/Habits/')({
   component: HabitsPage,
@@ -33,7 +34,7 @@ function HabitsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('Todos')
   
   // Vistas del flujo de creación
-  const [view, setView] = useState<'list' | 'create-select' | 'create-positive'>('list')
+  const [view, setView] = useState<'list' | 'create-select' | 'create-positive' | 'create-negative'>('list')
 
   const fetchHabits = async () => {
     setIsLoading(true)
@@ -105,6 +106,7 @@ function HabitsPage() {
         <CreateSelectView
           onBack={() => setView('list')}
           onSelectPositive={() => setView('create-positive')}
+          onSelectNegative={() => setView('create-negative')}
         />
       </DashboardLayout>
     )
@@ -124,6 +126,33 @@ function HabitsPage() {
     return (
       <DashboardLayout>
         <CreatePositiveForm
+          onCancel={() => setView('create-select')}
+          onSaveSuccess={() => {
+            fetchHabits()
+            setView('list')
+          }}
+          identities={identities}
+          refreshIdentities={fetchIdentities}
+          usedElementNames={usedElementNames}
+        />
+      </DashboardLayout>
+    )
+  }
+
+  // -------------------------------------------------------------
+  // VISTA DE CREACIÓN DE HÁBITO NEGATIVO
+  // -------------------------------------------------------------
+  if (view === 'create-negative') {
+    const usedElementNames = habits
+      ? [
+          ...habits.positivos.map((h) => h.elemento?.nombre_elemento),
+          ...habits.negativos.map((h) => h.elemento?.nombre_elemento),
+        ].filter((name): name is string => typeof name === 'string' && name !== '')
+      : []
+
+    return (
+      <DashboardLayout>
+        <CreateNegativeForm
           onCancel={() => setView('create-select')}
           onSaveSuccess={() => {
             fetchHabits()
@@ -189,12 +218,12 @@ function HabitsPage() {
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="space-y-6">
             <div className="h-6 w-48 rounded bg-white/5 animate-pulse" />
-            <div className="h-32 rounded-2xl bg-white/[0.02] animate-pulse" />
-            <div className="h-32 rounded-2xl bg-white/[0.02] animate-pulse" />
+            <div className="h-32 rounded-2xl bg-white/2 animate-pulse" />
+            <div className="h-32 rounded-2xl bg-white/2 animate-pulse" />
           </div>
           <div className="space-y-6">
             <div className="h-6 w-48 rounded bg-white/5 animate-pulse" />
-            <div className="h-32 rounded-2xl bg-white/[0.02] animate-pulse" />
+            <div className="h-32 rounded-2xl bg-white/2 animate-pulse" />
           </div>
         </div>
       ) : error ? (
@@ -229,7 +258,7 @@ function HabitsPage() {
           {/* Botón Card Placeholder */}
           <div 
             onClick={() => setView('create-select')}
-            className="mt-8 border border-dashed border-white/10 rounded-2xl bg-white/[0.01] hover:bg-white/[0.03] hover:border-primary/30 p-6 transition flex items-center gap-4 text-left cursor-pointer group"
+            className="mt-8 border border-dashed border-white/10 rounded-2xl bg-white/1 hover:bg-white/3 hover:border-primary/30 p-6 transition flex items-center gap-4 text-left cursor-pointer group"
           >
             <div className="grid size-11 place-items-center rounded-xl bg-white/5 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary transition duration-200">
               <Plus size={20} strokeWidth={2.4} />
@@ -255,7 +284,7 @@ function HabitsPage() {
             </div>
 
             {filteredPositivos.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/5 bg-white/[0.01] p-8 text-center">
+              <div className="rounded-2xl border border-dashed border-white/5 bg-white/1 p-8 text-center">
                 <p className="font-sans text-sm text-on-surface-variant/60">
                   No hay hábitos positivos activos en esta lista.
                 </p>
@@ -277,7 +306,7 @@ function HabitsPage() {
             </div>
 
             {filteredNegativos.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/5 bg-white/[0.01] p-8 text-center">
+              <div className="rounded-2xl border border-dashed border-white/5 bg-white/1 p-8 text-center">
                 <p className="font-sans text-sm text-on-surface-variant/60">
                   No hay hábitos negativos activos en esta lista.
                 </p>
@@ -293,7 +322,7 @@ function HabitsPage() {
             {/* Banner Inspiracional */}
             <div className="relative mt-8 overflow-hidden rounded-2xl border border-white/5 bg-surface-container-low/40 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
               {/* Decorative Background Icon */}
-              <Brain className="absolute -right-6 -bottom-6 size-36 text-white/[0.01] pointer-events-none" />
+              <Brain className="absolute -right-6 -bottom-6 size-36 text-white/1 pointer-events-none" />
               
               <div className="relative flex items-start gap-4">
                 <div className="grid size-9 place-items-center rounded-lg bg-primary/10 text-primary">

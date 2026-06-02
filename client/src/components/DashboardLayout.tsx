@@ -45,6 +45,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navItems = [
     { label: 'Home', to: '/Home', icon: Home },
     { label: 'Hábitos', to: '/Habits', icon: CheckSquare },
+    { label: 'Elementos', to: '/Elements', icon: Leaf },
     { label: 'Identidades', to: '/Identities', icon: Sparkles },
     { label: 'Estadísticas', to: '/Home', icon: BarChart3, isPlaceholder: true },
     { label: 'Ajustes', to: '/Home', icon: Settings, isPlaceholder: true },
@@ -57,7 +58,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Botón de Hamburguesa */}
         <button
           onClick={() => setIsCollapsed(false)}
-          className="grid size-10 place-items-center rounded-xl border border-white/5 bg-white/[0.02] text-on-surface hover:bg-white/5 transition"
+          className="grid size-10 place-items-center rounded-xl border border-white/5 bg-white/2 text-on-surface hover:bg-white/5 transition"
           title="Abrir menú"
         >
           <Menu size={20} />
@@ -133,7 +134,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {isCollapsed && (
           <button
             onClick={toggleSidebar}
-            className="hidden lg:grid mx-auto mt-2 size-9 place-items-center rounded-xl border border-white/5 bg-white/[0.02] text-on-surface hover:bg-white/5 transition duration-200"
+            className="hidden lg:grid mx-auto mt-2 size-9 place-items-center rounded-xl border border-white/5 bg-white/2 text-on-surface hover:bg-white/5 transition duration-200"
             title="Expandir menú"
           >
             <ChevronRight size={18} />
@@ -161,12 +162,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 className={`group relative flex items-center transition duration-200 ${
                   isCollapsed
                     ? `justify-center size-12 rounded-xl ${
-                        isActive ? 'bg-primary/15 text-primary' : 'text-on-surface-variant/80 hover:bg-white/[0.03] hover:text-on-surface'
+                        isActive ? 'bg-primary/15 text-primary' : 'text-on-surface-variant/80 hover:bg-white/3 hover:text-on-surface'
                       }`
                     : `gap-5 w-full rounded-xl px-5 py-4 lg:py-3.5 font-label text-lg lg:text-base font-semibold ${
                         isActive
                           ? 'bg-primary/15 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]'
-                          : 'text-on-surface-variant/80 hover:bg-white/[0.03] hover:text-on-surface'
+                          : 'text-on-surface-variant/80 hover:bg-white/3 hover:text-on-surface'
                       }`
                 }`}
               >
