@@ -6,6 +6,8 @@ import { DashboardLayout } from '#/components/DashboardLayout'
 import { HabitCard } from '#/components/HabitCard'
 import type { HabitData } from '#/components/HabitCard'
 import { api } from '#/services/Api'
+import { CreateSelectView } from './components/-CreateSelectView'
+import { CreatePositiveForm } from './components/-CreatePositiveForm'
 
 export const Route = createFileRoute('/Habits/')({
   component: HabitsPage,
@@ -18,32 +20,54 @@ interface HabitsResponse {
 
 type TabType = 'Todos' | 'Activos' | 'Por hacer'
 
+interface Identidad {
+  id_identidad: number
+  nombre_identidad: string
+}
+
 function HabitsPage() {
   const [habits, setHabits] = useState<HabitsResponse | null>(null)
+  const [identities, setIdentities] = useState<Identidad[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('Todos')
+  
+  // Vistas del flujo de creación
+  const [view, setView] = useState<'list' | 'create-select' | 'create-positive'>('list')
 
-  // Obtener hábitos al cargar la pantalla
-  useEffect(() => {
-    async function fetchHabits() {
-      setIsLoading(true)
-      setError(null)
-      try {
-        const response = await api.get('/habits')
-        if (response && response.data) {
-          setHabits(response.data)
-        } else {
-          throw new Error('No se recibió la estructura de datos esperada')
-        }
-      } catch (err) {
-        console.error('Error fetching habits:', err)
-        setError(err instanceof Error ? err.message : 'No fue posible conectar con el servidor.')
-      } finally {
-        setIsLoading(false)
+  const fetchHabits = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.get('/habits')
+      if (response && response.data) {
+        setHabits(response.data)
+      } else {
+        throw new Error('No se recibió la estructura de datos esperada')
       }
+    } catch (err) {
+      console.error('Error fetching habits:', err)
+      setError(err instanceof Error ? err.message : 'No fue posible conectar con el servidor.')
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  const fetchIdentities = async () => {
+    try {
+      const response = await api.get('/identities')
+      if (response && Array.isArray(response.data)) {
+        setIdentities(response.data)
+      }
+    } catch (err) {
+      console.error('Error al cargar identidades:', err)
+    }
+  }
+
+  // Obtener datos iniciales
+  useEffect(() => {
     fetchHabits()
+    fetchIdentities()
   }, [])
 
   // Filtrado lógico de hábitos en base a la pestaña seleccionada
@@ -70,9 +94,52 @@ function HabitsPage() {
   }
 
   const { positivos: filteredPositivos, negativos: filteredNegativos } = getFilteredHabits()
-
   const tabs: TabType[] = ['Todos', 'Activos', 'Por hacer']
 
+  // -------------------------------------------------------------
+  // VISTA DE SELECCIÓN DE CAMINO
+  // -------------------------------------------------------------
+  if (view === 'create-select') {
+    return (
+      <DashboardLayout>
+        <CreateSelectView
+          onBack={() => setView('list')}
+          onSelectPositive={() => setView('create-positive')}
+        />
+      </DashboardLayout>
+    )
+  }
+
+  // -------------------------------------------------------------
+  // VISTA DE CREACIÓN DE HÁBITO POSITIVO
+  // -------------------------------------------------------------
+  if (view === 'create-positive') {
+    const usedElementNames = habits
+      ? [
+          ...habits.positivos.map((h) => h.elemento?.nombre_elemento),
+          ...habits.negativos.map((h) => h.elemento?.nombre_elemento),
+        ].filter((name): name is string => typeof name === 'string' && name !== '')
+      : []
+
+    return (
+      <DashboardLayout>
+        <CreatePositiveForm
+          onCancel={() => setView('create-select')}
+          onSaveSuccess={() => {
+            fetchHabits()
+            setView('list')
+          }}
+          identities={identities}
+          refreshIdentities={fetchIdentities}
+          usedElementNames={usedElementNames}
+        />
+      </DashboardLayout>
+    )
+  }
+
+  // -------------------------------------------------------------
+  // VISTA: Listado Normal de Hábitos
+  // -------------------------------------------------------------
   return (
     <DashboardLayout>
       {/* Encabezado Principal */}
@@ -94,7 +161,7 @@ function HabitsPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`rounded-lg px-4.5 py-2 font-sans text-xs font-bold transition-all duration-200 ${
+                className={`rounded-lg px-4 py-2 font-sans text-xs font-bold transition-all duration-200 ${
                   activeTab === tab
                     ? 'bg-surface-bright text-on-surface shadow-md'
                     : 'text-on-surface-variant hover:text-on-surface'
@@ -107,7 +174,7 @@ function HabitsPage() {
 
           {/* Add Habit Button */}
           <button
-            onClick={() => alert('¡Pronto! El formulario de creación estará disponible en la siguiente fase.')}
+            onClick={() => setView('create-select')}
             className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 font-label text-sm font-bold text-on-primary shadow-[0_12px_28px_rgba(247,187,126,0.14)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-fixed"
           >
             <Plus size={18} strokeWidth={2.4} />
@@ -161,7 +228,7 @@ function HabitsPage() {
 
           {/* Botón Card Placeholder */}
           <div 
-            onClick={() => alert('¡Pronto! El formulario de creación estará disponible en la siguiente fase de desarrollo.')}
+            onClick={() => setView('create-select')}
             className="mt-8 border border-dashed border-white/10 rounded-2xl bg-white/[0.01] hover:bg-white/[0.03] hover:border-primary/30 p-6 transition flex items-center gap-4 text-left cursor-pointer group"
           >
             <div className="grid size-11 place-items-center rounded-xl bg-white/5 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary transition duration-200">

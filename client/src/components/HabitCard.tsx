@@ -1,16 +1,32 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  Activity,
   AlertTriangle,
+  Apple,
   BookOpen,
+  Brain,
+  Briefcase,
   CheckCircle,
   ChevronDown,
+  Coffee,
+  Compass,
   Dumbbell,
+  Flame,
   Gamepad2,
+  GlassWater,
+  GraduationCap,
+  Heart,
+  Moon,
   MoreVertical,
+  Music,
+  PenTool,
   Smartphone,
   Sparkles,
+  Timer,
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+
+import { checkHabit, relapseHabit } from '#/services/habitsService'
 
 export interface HabitData {
   id_habito: number
@@ -26,9 +42,17 @@ export interface HabitData {
     recompensa?: string
     consecuencia?: string
     objetivo?: string
+    icono?: string
   }
   dias_semana: number[]
   identidad?: string | null
+  dias_completados?: number[]
+  dias_recaidos?: number[]
+  elemento?: {
+    nombre_elemento: string
+    fase_elemento: number
+    xp_fase_actual_elemento: number
+  } | null
 }
 
 interface HabitCardProps {
@@ -36,13 +60,17 @@ interface HabitCardProps {
 }
 
 export function HabitCard({ habit }: HabitCardProps) {
+  // Obtener el día actual (Lunes = 1, Domingo = 7)
+  const todayIndex = new Date().getDay()
+  const todayValue = todayIndex === 0 ? 7 : todayIndex
+
   const [isOpen, setIsOpen] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   // Estados locales para la interacción de Check y Recaída en tiempo real
-  const [isCheckedToday, setIsCheckedToday] = useState(false)
-  const [isRelapsedToday, setIsRelapsedToday] = useState(false)
+  const [isCheckedToday, setIsCheckedToday] = useState(() => habit.dias_completados?.includes(todayValue) || false)
+  const [isRelapsedToday, setIsRelapsedToday] = useState(() => habit.dias_recaidos?.includes(todayValue) || false)
   const [currentMomentum, setCurrentMomentum] = useState(habit.momentum_habito)
 
   // Cerrar el menú de tres puntos si se hace clic afuera
@@ -70,15 +98,59 @@ export function HabitCard({ habit }: HabitCardProps) {
     { label: 'D', value: 7 },
   ]
 
-  // Obtener el día actual (Lunes = 1, Domingo = 7)
-  const todayIndex = new Date().getDay()
-  const todayValue = todayIndex === 0 ? 7 : todayIndex
+
 
   // Filtrar los días para mostrar ÚNICAMENTE los que el usuario definió
   const activeDays = daysOfWeek.filter((day) => habit.dias_semana.includes(day.value))
 
-  // Elegir icono por nombre de hábito de forma inteligente
+  // Obtener la clase de color según el tipo de icono y hábito
+  const getIconColorClass = (iconName: string) => {
+    if (!isPositive) return 'text-error'
+    
+    const secondaryIcons = ['BookOpen', 'GraduationCap', 'PenTool', 'Briefcase']
+    const primaryIcons = ['Dumbbell', 'Activity', 'Flame', 'Timer', 'Compass']
+    const tertiaryIcons = ['Sparkles', 'Brain', 'Heart', 'Moon', 'Coffee', 'GlassWater', 'Music']
+    
+    if (secondaryIcons.includes(iconName)) return 'text-secondary'
+    if (primaryIcons.includes(iconName)) return 'text-primary'
+    if (tertiaryIcons.includes(iconName)) return 'text-tertiary'
+    return 'text-secondary' // default positive
+  }
+
+  // Elegir icono por nombre de hábito de forma inteligente o recuperarlo de base de datos
   const getIcon = () => {
+    // 1. Intentar cargar el icono guardado en el sistema del hábito
+    const savedIconName = habit.sistema_habito.icono
+
+    const iconMap: Record<string, React.ComponentType<{ className?: string; size?: number }> | undefined> = {
+      BookOpen,
+      Dumbbell,
+      Sparkles,
+      Smartphone,
+      Gamepad2,
+      CheckCircle,
+      Heart,
+      Brain,
+      Apple,
+      Flame,
+      Coffee,
+      GlassWater,
+      Moon,
+      Activity,
+      Timer,
+      GraduationCap,
+      Compass,
+      PenTool,
+      Music,
+      Briefcase,
+    }
+
+    if (savedIconName && iconMap[savedIconName]) {
+      const IconComponent = iconMap[savedIconName]
+      return <IconComponent className={getIconColorClass(savedIconName)} size={20} />
+    }
+
+    // 2. Fallback de selección inteligente por nombre (retrocompatibilidad)
     const name = habit.nombre_habito.toLowerCase()
     if (name.includes('leer') || name.includes('lectura')) {
       return <BookOpen className="text-secondary" size={20} />
@@ -95,7 +167,7 @@ export function HabitCard({ habit }: HabitCardProps) {
     if (name.includes('juego') || name.includes('consola') || name.includes('videojuego')) {
       return <Gamepad2 className="text-error" size={20} />
     }
-    return <CheckCircle className="text-primary" size={20} />
+    return <CheckCircle className={isPositive ? 'text-secondary' : 'text-error'} size={20} />
   }
 
   // Clases dinámicas del contenedor de iconos según el tipo de hábito
@@ -104,7 +176,7 @@ export function HabitCard({ habit }: HabitCardProps) {
     : 'bg-error/10 shadow-[0_0_15px_rgba(255,180,171,0.06)]'
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-surface-container-low/50 p-5 shadow-[0_8px_32px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.02)] backdrop-blur-xl transition hover:border-white/10 hover:bg-surface-container/60">
+    <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-surface-container-low/90 p-5 shadow-[0_8px_32px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.02)] transition-colors duration-200 hover:border-white/10 hover:bg-surface-container/95">
       {/* Encabezado de la Tarjeta */}
       <div className="flex items-start justify-between gap-3">
         {/* Contenido Principal Izquierdo */}
@@ -193,8 +265,8 @@ export function HabitCard({ habit }: HabitCardProps) {
         <div className="flex items-center gap-1.5">
           {activeDays.map((day) => {
             const isToday = day.value === todayValue
-            const isCompleted = isToday && isCheckedToday
-            const isRelapsed = isToday && isRelapsedToday
+            const isCompleted = habit.dias_completados?.includes(day.value) || (isToday && isCheckedToday)
+            const isRelapsed = habit.dias_recaidos?.includes(day.value) || (isToday && isRelapsedToday)
 
             // Clases de estilo dinámicas para el día programado
             let dayStyleClass = ''
@@ -241,8 +313,8 @@ export function HabitCard({ habit }: HabitCardProps) {
             <div
               className={`h-full rounded-full transition-all duration-500 ${
                 isPositive
-                  ? 'bg-linear-to-r from-secondary/80 to-secondary shadow-[0_0_10px_rgba(172,206,191,0.25)]'
-                  : 'bg-linear-to-r from-error/80 to-error shadow-[0_0_10px_rgba(255,180,171,0.25)]'
+                  ? 'bg-gradient-to-r from-secondary/80 to-secondary shadow-[0_0_10px_rgba(172,206,191,0.25)]'
+                  : 'bg-gradient-to-r from-error/80 to-error shadow-[0_0_10px_rgba(255,180,171,0.25)]'
               }`}
               style={{ width: `${Math.max(currentMomentum, 2)}%` }}
             />
@@ -252,10 +324,17 @@ export function HabitCard({ habit }: HabitCardProps) {
         {/* Botón de Acción */}
         {isPositive ? (
           <button
-            onClick={() => {
+            onClick={async () => {
               if (!isCheckedToday) {
-                setIsCheckedToday(true)
-                setCurrentMomentum((prev) => Math.min(prev + 10, 100))
+                try {
+                  const res = await checkHabit(habit.id_habito)
+                  if (!res.error) {
+                    setIsCheckedToday(true)
+                    setCurrentMomentum(res.data.momentum_habito)
+                  }
+                } catch (err) {
+                  alert(err instanceof Error ? err.message : 'Error al registrar el check')
+                }
               }
             }}
             disabled={isCheckedToday}
@@ -270,10 +349,17 @@ export function HabitCard({ habit }: HabitCardProps) {
           </button>
         ) : (
           <button
-            onClick={() => {
+            onClick={async () => {
               if (!isRelapsedToday) {
-                setIsRelapsedToday(true)
-                setCurrentMomentum((prev) => Math.max(prev - 10, 0))
+                try {
+                  const res = await relapseHabit(habit.id_habito)
+                  if (!res.error) {
+                    setIsRelapsedToday(true)
+                    setCurrentMomentum(res.data.momentum_habito)
+                  }
+                } catch (err) {
+                  alert(err instanceof Error ? err.message : 'Error al registrar la recaída')
+                }
               }
             }}
             disabled={isRelapsedToday}
@@ -296,7 +382,8 @@ export function HabitCard({ habit }: HabitCardProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            style={{ willChange: 'height, opacity' }}
             className="overflow-hidden"
           >
             <div className="mt-5 grid grid-cols-2 gap-4 border-t border-white/5 pt-5 text-left font-sans text-xs">
@@ -339,6 +426,84 @@ export function HabitCard({ habit }: HabitCardProps) {
                   {isPositive ? sys.recompensa : sys.consecuencia}
                 </p>
               </div>
+
+              {/* Evolución Visual del Elemento */}
+              {habit.elemento && (
+                <div className="col-span-2 border-t border-white/5 pt-4 mt-1 flex flex-col sm:flex-row gap-4 items-center">
+                  {/* Vista previa isométrica */}
+                  <div className="size-24 rounded-2xl bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d] border border-white/5 flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
+                    {habit.elemento.nombre_elemento === 'Libro Antiguo' ? (
+                      <img
+                        src={`/assets/elements/libro/fase_${habit.elemento.fase_elemento}.png`}
+                        alt="Evolución visual del elemento"
+                        className="size-20 object-contain relative z-10"
+                      />
+                    ) : (
+                      <div className="relative z-10 text-on-surface-variant/40 flex flex-col items-center">
+                        {habit.elemento.nombre_elemento === 'Mancuerna' ? (
+                          <Dumbbell size={28} className="text-[#ebc246]" />
+                        ) : (
+                          <Sparkles size={28} className="text-primary" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Detalles de Progresión */}
+                  <div className="flex-1 w-full text-left">
+                    <span className="font-bold uppercase tracking-wider text-on-surface-variant/50 text-[9px] block">
+                      Evolución Visual del Elemento
+                    </span>
+                    <h4 className="mt-1 font-sans text-sm font-bold text-on-surface">
+                      {habit.elemento.nombre_elemento}
+                    </h4>
+                    <p className="font-sans text-xs text-on-surface-variant/75 mt-0.5 font-medium">
+                      Fase {habit.elemento.fase_elemento}: {
+                        habit.elemento.nombre_elemento === 'Libro Antiguo' ? (
+                          habit.elemento.fase_elemento === 0 ? 'Libro simple' :
+                          habit.elemento.fase_elemento === 1 ? 'Pequeña colección' :
+                          habit.elemento.fase_elemento === 2 ? 'Biblioteca organizada' :
+                          'Espacio intelectual avanzado'
+                        ) : 'Objeto en evolución'
+                      }
+                    </p>
+
+                    {/* Barra de progreso de fase */}
+                    {habit.elemento.fase_elemento < 3 ? (
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between font-label text-[10px] text-on-surface-variant/50 font-bold">
+                          <span>XP de Fase</span>
+                          <span>
+                            {habit.elemento.xp_fase_actual_elemento} / {
+                              habit.elemento.fase_elemento === 0 ? 100 :
+                              habit.elemento.fase_elemento === 1 ? 200 : 400
+                            } XP
+                          </span>
+                        </div>
+                        <div className="mt-1 h-1.5 rounded-full bg-white/5 p-0.5 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary shadow-[0_0_8px_rgba(247,187,126,0.15)] transition-all duration-500"
+                            style={{
+                              width: `${
+                                (habit.elemento.xp_fase_actual_elemento / (
+                                  habit.elemento.fase_elemento === 0 ? 100 :
+                                  habit.elemento.fase_elemento === 1 ? 200 : 400
+                                )) * 100
+                              }%`
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-3 inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-lg px-2.5 py-1 text-primary font-label text-[10px] font-bold">
+                        <Sparkles size={11} />
+                        <span>Fase Máxima Alcanzada</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

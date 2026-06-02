@@ -163,7 +163,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     ? `justify-center size-12 rounded-xl ${
                         isActive ? 'bg-primary/15 text-primary' : 'text-on-surface-variant/80 hover:bg-white/[0.03] hover:text-on-surface'
                       }`
-                    : `gap-4.5 w-full rounded-xl px-4.5 py-4 lg:py-3.5 font-label text-lg lg:text-base font-semibold ${
+                    : `gap-5 w-full rounded-xl px-5 py-4 lg:py-3.5 font-label text-lg lg:text-base font-semibold ${
                         isActive
                           ? 'bg-primary/15 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]'
                           : 'text-on-surface-variant/80 hover:bg-white/[0.03] hover:text-on-surface'
