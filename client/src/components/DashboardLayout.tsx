@@ -10,6 +10,7 @@ import {
   Settings,
   Sparkles,
   X,
+  LogOut,
 } from 'lucide-react'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
@@ -193,8 +194,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </nav>
 
         {/* Perfil del Usuario en el Fondo */}
-        <footer className={`mt-auto border-t border-white/5 pt-6 ${isCollapsed ? 'flex justify-center' : 'flex justify-start lg:block'}`}>
-          <div className="flex items-center gap-4 animate-fade-in" title={isCollapsed ? `Bienvenido, ${nombreUsuario}` : undefined}>
+        <footer className={`mt-auto border-t border-white/5 pt-6 space-y-4 ${isCollapsed ? 'flex flex-col items-center' : 'flex flex-col justify-start'}`}>
+          <div className="flex items-center gap-4 animate-fade-in w-full" title={isCollapsed ? `Bienvenido, ${nombreUsuario}` : undefined}>
             <div className="relative size-11 shrink-0 rounded-full border border-primary/20 bg-primary/10 shadow-[0_0_15px_rgba(247,187,126,0.08)] flex items-center justify-center font-label text-base font-bold text-primary uppercase">
               {nombreUsuario.substring(0, 2)}
             </div>
@@ -211,6 +212,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             )}
           </div>
+
+          {/* Botón de Cerrar Sesión */}
+          <button
+            onClick={() => {
+              tokenManager.clearSession()
+              window.location.href = '/login'
+            }}
+            className={`flex items-center justify-center transition duration-200 border border-white/5 cursor-pointer rounded-xl bg-surface-container-low/50 hover:bg-error/10 hover:text-error hover:border-error/20 ${
+              isCollapsed
+                ? 'size-11 shrink-0 text-on-surface-variant/80'
+                : 'w-full py-3 gap-3 font-label text-base lg:text-sm font-bold text-on-surface-variant/90'
+            }`}
+            title="Cerrar Sesión"
+          >
+            <LogOut size={16} />
+            {!isCollapsed && <span>Cerrar Sesión</span>}
+          </button>
         </footer>
       </aside>
 
