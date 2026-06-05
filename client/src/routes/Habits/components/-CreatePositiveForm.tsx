@@ -29,6 +29,7 @@ import {
 import { useState } from 'react'
 import { api } from '#/services/Api'
 import { IdentityModal } from './-IdentityModal'
+import { getRegisteredElements } from '#/utils/elementRegistry'
 
 interface Identidad {
   id_identidad: number
@@ -90,38 +91,19 @@ export function CreatePositiveForm({
 
   // Manifiesto Visual selection (Paso 3)
   const [nombreElemento, setNombreElemento] = useState(() => {
-    const available = ['Libro Antiguo', 'Mancuerna', 'Esterilla Yoga'].find(
-      (name) => !usedElementNames.includes(name)
-    )
-    return available || 'Personalizado'
+    const registered = getRegisteredElements()
+    const available = registered
+      .filter((el) => el.key !== 'personalizado')
+      .find((el) => !usedElementNames.includes(el.name))
+    return available ? available.name : 'Personalizado'
   })
 
-  const visualElementsList = [
-    {
-      name: 'Libro Antiguo',
-      icon: BookOpen,
-      iconColor: 'text-[#accebf]',
-      isUsed: usedElementNames.includes('Libro Antiguo'),
-    },
-    {
-      name: 'Mancuerna',
-      icon: Dumbbell,
-      iconColor: 'text-[#ebc246]',
-      isUsed: usedElementNames.includes('Mancuerna'),
-    },
-    {
-      name: 'Esterilla Yoga',
-      icon: Sparkles,
-      iconColor: 'text-primary',
-      isUsed: usedElementNames.includes('Esterilla Yoga'),
-    },
-    {
-      name: 'Personalizado',
-      icon: Plus,
-      iconColor: 'text-on-surface-variant/40',
-      isUsed: false,
-    },
-  ]
+  const visualElementsList = getRegisteredElements().map((el) => ({
+    name: el.name,
+    icon: el.icon,
+    iconColor: el.iconColor,
+    isUsed: el.key !== 'personalizado' ? usedElementNames.includes(el.name) : false,
+  }))
 
   // Modal de Identidad
   const [showIdentityModal, setShowIdentityModal] = useState(false)

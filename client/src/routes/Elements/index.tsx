@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { getElementDetails, getSpritePath } from '#/utils/elementRegistry'
 
 import { DashboardLayout } from '#/components/DashboardLayout'
 import { api } from '#/services/Api'
@@ -56,106 +57,6 @@ function ElementsPage() {
     }
     fetchElements()
   }, [])
-
-  // Helper para asignar los estilos, descripciones y configuraciones visuales de cada elemento
-  const getElementDetails = (nombreElemento: string, fase: number) => {
-    const name = nombreElemento.toLowerCase()
-
-    if (name.includes('libro')) {
-      const phases = [
-        { name: 'Libro simple', desc: 'Un libro cerrado sobre una mesa oscura. El comienzo de la curiosidad.' },
-        { name: 'Pequeña colección', desc: 'Tres libros apilados. Tu interés por aprender se empieza a notar.' },
-        { name: 'Biblioteca organizada', desc: 'Una estantería de madera. Tu conocimiento está bien estructurado.' },
-        { name: 'Espacio intelectual', desc: 'Escritorio con tintero, velas y pluma. La sabiduría guía tus días.' },
-      ]
-      const currentPhase = phases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
-
-      return {
-        typeLabel: 'Intelecto y Foco',
-        phaseName: currentPhase.name,
-        phaseDesc: currentPhase.desc,
-        icon: BookOpen,
-        iconColor: 'text-[#accebf]',
-        iconBg: 'bg-[#1b2b24] border border-[#2e5241]/35',
-        themeProgressBg: 'bg-[#accebf]',
-        themeText: 'text-[#accebf]',
-        glowStyle: 'shadow-[0_0_25px_rgba(172,206,191,0.05)]',
-        hasSprite: true,
-        spriteFolder: 'libro',
-      }
-    }
-
-    if (name.includes('mancuerna')) {
-      const phases = [
-        { name: 'Mancuerna simple', desc: 'Una mancuerna de metal. El compromiso inicial con tu cuerpo.' },
-        { name: 'Par de pesas', desc: 'Varias pesas organizadas. Tu fuerza física va en aumento.' },
-        { name: 'Banco de entrenamiento', desc: 'Área de fuerza con soporte. La disciplina esculpe tu físico.' },
-        { name: 'Gimnasio personal', desc: 'Espacio completo con barras y discos. El templo de la disciplina.' },
-      ]
-      const currentPhase = phases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
-
-      return {
-        typeLabel: 'Fuerza y Disciplina',
-        phaseName: currentPhase.name,
-        phaseDesc: currentPhase.desc,
-        icon: Dumbbell,
-        iconColor: 'text-[#ebc246]',
-        iconBg: 'bg-[#332a15] border border-[#594924]/35',
-        themeProgressBg: 'bg-[#ebc246]',
-        themeText: 'text-[#ebc246]',
-        glowStyle: 'shadow-[0_0_25px_rgba(235,194,70,0.05)]',
-        hasSprite: false,
-        spriteFolder: 'mancuerna',
-      }
-    }
-
-    if (name.includes('yoga') || name.includes('esterilla')) {
-      const phases = [
-        { name: 'Esterilla enrollada', desc: 'Una esterilla en la esquina. El espacio de calma esperando ser abierto.' },
-        { name: 'Esterilla abierta con incienso', desc: 'Incienso encendido. Creando la atmósfera de paz interior.' },
-        { name: 'Rincón de meditación', desc: 'Cojín de zafu y plantas de bambú. Tu santuario de introspección.' },
-        { name: 'Altar zen avanzado', desc: 'Campanas tibetanas, velas y luz tenue. Armonía espiritual total.' },
-      ]
-      const currentPhase = phases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
-
-      return {
-        typeLabel: 'Calma y Bienestar',
-        phaseName: currentPhase.name,
-        phaseDesc: currentPhase.desc,
-        icon: Sparkles,
-        iconColor: 'text-primary',
-        iconBg: 'bg-[#2f271d] border border-[#4d3d2c]/35',
-        themeProgressBg: 'bg-primary',
-        themeText: 'text-primary',
-        glowStyle: 'shadow-[0_0_25px_rgba(247,187,126,0.05)]',
-        hasSprite: false,
-        spriteFolder: 'yoga',
-      }
-    }
-
-    // Default / Personalizado
-    const defaultPhases = [
-      { name: 'Objeto Fase 1', desc: 'Comienzo de un nuevo ciclo en tu habitación.' },
-      { name: 'Objeto Fase 2', desc: 'Tu constancia está moldeando el entorno.' },
-      { name: 'Objeto Fase 3', desc: 'La habitación refleja tu crecimiento.' },
-      { name: 'Objeto Fase 4', desc: 'Representación máxima de tu consistencia.' },
-    ]
-    const currentPhase = defaultPhases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
-
-    return {
-      typeLabel: 'Crecimiento Personal',
-      phaseName: currentPhase.name,
-      phaseDesc: currentPhase.desc,
-      icon: Leaf,
-      iconColor: 'text-[#accebf]',
-      iconBg: 'bg-white/5 border border-white/10',
-      themeProgressBg: 'bg-primary',
-      themeText: 'text-primary',
-      glowStyle: 'shadow-[0_0_25px_rgba(255,255,255,0.02)]',
-      hasSprite: false,
-      spriteFolder: 'personalizado',
-    }
-  }
 
   return (
     <DashboardLayout>
@@ -232,6 +133,7 @@ function ElementsPage() {
             const xpNeeded = elem.fase_elemento === 1 ? 100 : elem.fase_elemento === 2 ? 200 : 400
             const progressPercentage = elem.fase_elemento >= 4 ? 100 : Math.max((elem.xp_fase_actual_elemento / xpNeeded) * 100, 2)
             const details = getElementDetails(elem.nombre_elemento, elem.fase_elemento)
+            const phaseInfo = details.phases[elem.fase_elemento - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
             const Icon = details.icon
 
             return (
@@ -265,18 +167,21 @@ function ElementsPage() {
 
                     {/* Render Sprite Image if available, otherwise beautiful gradient layout */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      {details.hasSprite ? (
-                        <img
-                          src={`/assets/elements/${details.spriteFolder}/fase_${elem.fase_elemento}.png`}
-                          alt={elem.nombre_elemento}
-                          className="size-36 object-contain z-10 transition-transform duration-300 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="relative size-24 rounded-2xl bg-linear-to-br from-white/2 to-white/0.5 border border-white/5 flex items-center justify-center shadow-inner group">
-                          <div className="absolute inset-0 bg-radial from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          <Icon size={42} className={`${details.iconColor} z-10 transition-transform duration-300 group-hover:scale-110`} />
-                        </div>
-                      )}
+                      {(() => {
+                        const sprite = getSpritePath(elem.nombre_elemento, elem.fase_elemento);
+                        return sprite ? (
+                          <img
+                            src={sprite}
+                            alt={elem.nombre_elemento}
+                            className="size-36 object-contain z-10 transition-transform duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="relative size-24 rounded-2xl bg-linear-to-br from-white/2 to-white/0.5 border border-white/5 flex items-center justify-center shadow-inner group">
+                            <div className="absolute inset-0 bg-radial from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <Icon size={42} className={`${details.iconColor} z-10 transition-transform duration-300 group-hover:scale-110`} />
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
 
@@ -331,7 +236,7 @@ function ElementsPage() {
 
                     {/* Description of current phase */}
                     <p className="mt-4 font-sans text-xs leading-relaxed text-on-surface-variant/80">
-                      {details.phaseDesc}
+                      {phaseInfo.desc}
                     </p>
                   </div>
 

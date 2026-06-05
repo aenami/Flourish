@@ -25,6 +25,7 @@ import {
   Timer,
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { getSpritePath, getElementDetails } from '#/utils/elementRegistry'
 
 import { checkHabit, relapseHabit } from '#/services/habitsService'
 
@@ -426,84 +427,71 @@ export function HabitCard({ habit }: HabitCardProps) {
                   {isPositive ? sys.recompensa : sys.consecuencia}
                 </p>
               </div>
-
-              {/* Evolución Visual del Elemento */}
-              {habit.elemento && (
-                <div className="col-span-2 border-t border-white/5 pt-4 mt-1 flex flex-col sm:flex-row gap-4 items-center">
-                  {/* Vista previa isométrica */}
-                  <div className="size-24 rounded-2xl bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d] border border-white/5 flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
-                    {habit.elemento.nombre_elemento === 'Libro Antiguo' ? (
-                      <img
-                        src={`/assets/elements/libro/fase_${habit.elemento.fase_elemento}.png`}
-                        alt="Evolución visual del elemento"
-                        className="size-20 object-contain relative z-10"
-                      />
-                    ) : (
-                      <div className="relative z-10 text-on-surface-variant/40 flex flex-col items-center">
-                        {habit.elemento.nombre_elemento === 'Mancuerna' ? (
-                          <Dumbbell size={28} className="text-[#ebc246]" />
-                        ) : (
-                          <Sparkles size={28} className="text-primary" />
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Detalles de Progresión */}
-                  <div className="flex-1 w-full text-left">
-                    <span className="font-bold uppercase tracking-wider text-on-surface-variant/50 text-[9px] block">
-                      Evolución Visual del Elemento
-                    </span>
-                    <h4 className="mt-1 font-sans text-sm font-bold text-on-surface">
-                      {habit.elemento.nombre_elemento}
-                    </h4>
-                    <p className="font-sans text-xs text-on-surface-variant/75 mt-0.5 font-medium">
-                      Fase {habit.elemento.fase_elemento}: {
-                        habit.elemento.nombre_elemento === 'Libro Antiguo' ? (
-                          habit.elemento.fase_elemento === 1 ? 'Libro simple' :
-                          habit.elemento.fase_elemento === 2 ? 'Pequeña colección' :
-                          habit.elemento.fase_elemento === 3 ? 'Biblioteca organizada' :
-                          'Espacio intelectual avanzado'
-                        ) : 'Objeto en evolución'
-                      }
-                    </p>
-
-                    {/* Barra de progreso de fase */}
-                    {habit.elemento.fase_elemento < 4 ? (
-                      <div className="mt-3">
-                        <div className="flex items-center justify-between font-label text-[10px] text-on-surface-variant/50 font-bold">
-                          <span>XP de Fase</span>
-                          <span>
-                            {habit.elemento.xp_fase_actual_elemento} / {
-                              habit.elemento.fase_elemento === 1 ? 100 :
-                              habit.elemento.fase_elemento === 2 ? 200 : 400
-                            } XP
-                          </span>
+              {habit.elemento && (() => {
+                const sprite = getSpritePath(habit.elemento.nombre_elemento, habit.elemento.fase_elemento);
+                const details = getElementDetails(habit.elemento.nombre_elemento, habit.elemento.fase_elemento);
+                const IconComponent = details.icon;
+                const phaseInfo = details.phases[habit.elemento.fase_elemento - 1] || { name: 'Objeto en evolución' };
+                const xpNeeded = habit.elemento.fase_elemento === 1 ? 100 : habit.elemento.fase_elemento === 2 ? 200 : 400;
+                
+                return (
+                  <div className="col-span-2 border-t border-white/5 pt-4 mt-1 flex flex-col sm:flex-row gap-4 items-center">
+                    {/* Vista previa isométrica */}
+                    <div className="size-24 rounded-2xl bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d] border border-white/5 flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
+                      {sprite ? (
+                        <img
+                          src={sprite}
+                          alt="Evolución visual del elemento"
+                          className="size-20 object-contain relative z-10"
+                        />
+                      ) : (
+                        <div className="relative z-10 text-on-surface-variant/40 flex flex-col items-center">
+                          <IconComponent size={28} className={details.iconColor} />
                         </div>
-                        <div className="mt-1 h-1.5 rounded-full bg-white/5 p-0.5 overflow-hidden">
-                          <div
+                      )}
+                    </div>
+
+                    {/* Detalles de Progresión */}
+                    <div className="flex-1 w-full text-left">
+                      <span className="font-bold uppercase tracking-wider text-on-surface-variant/50 text-[9px] block">
+                        Evolución Visual del Elemento
+                      </span>
+                      <h4 className="mt-1 font-sans text-sm font-bold text-on-surface">
+                        {habit.elemento.nombre_elemento}
+                      </h4>
+                      <p className="font-sans text-xs text-on-surface-variant/75 mt-0.5 font-medium">
+                        Fase {habit.elemento.fase_elemento}: {phaseInfo.name}
+                      </p>
+
+                      {/* Barra de progreso de fase */}
+                      {habit.elemento.fase_elemento < 4 ? (
+                        <div className="mt-3">
+                          <div className="flex items-center justify-between font-label text-[10px] text-on-surface-variant/50 font-bold">
+                            <span>XP de Fase</span>
+                            <span>
+                              {habit.elemento.xp_fase_actual_elemento} / {xpNeeded} XP
+                            </span>
+                          </div>
+                          <div className="mt-1 h-1.5 rounded-full bg-white/5 p-0.5 overflow-hidden">
+                            <div
                               className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary shadow-[0_0_8px_rgba(247,187,126,0.15)] transition-all duration-500"
                               style={{
-                                width: `${
-                                  (habit.elemento.xp_fase_actual_elemento / (
-                                    habit.elemento.fase_elemento === 1 ? 100 :
-                                    habit.elemento.fase_elemento === 2 ? 200 : 400
-                                  )) * 100
-                                }%`
+                                width: `${(habit.elemento.xp_fase_actual_elemento / xpNeeded) * 100}%`
                               }}
-                          />
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="mt-3 inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-lg px-2.5 py-1 text-primary font-label text-[10px] font-bold">
-                        <Sparkles size={11} />
-                        <span>Fase Máxima Alcanzada</span>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="mt-3 inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-lg px-2.5 py-1 text-primary font-label text-[10px] font-bold">
+                          <Sparkles size={11} />
+                          <span>Fase Máxima Alcanzada</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
             </div>
           </motion.div>
         )}

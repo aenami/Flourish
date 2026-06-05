@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Dumbbell, Leaf, Sparkles } from 'lucide-react'
 import { useState } from 'react'
+import { getSpritePath, getElementDetails } from '#/utils/elementRegistry'
 
 export interface ElementRoomData {
   id_elemento: number
@@ -49,26 +49,11 @@ export function SantuarioRoom({
     }
   }
 
-  // Helper para identificar el sprite
-  const getSpritePath = (nombre: string, fase: number) => {
-    const name = nombre.toLowerCase()
-    if (name.includes('libro')) {
-      return `/assets/elements/libro/fase_${fase}.png`
-    }
-    if (name.includes('mancuerna')) {
-      return '/assets/elements/mancuerna/fase_1.png'
-    }
-    if (name.includes('manzana')) {
-      return '/assets/elements/manzana/fase_1.png'
-    }
-    return null
-  }
-
   // Helper para color del halo de edición / glow
   const getGlowColor = (nombre: string) => {
-    const name = nombre.toLowerCase()
-    if (name.includes('libro')) return 'shadow-[0_0_20px_rgba(172,206,191,0.4)] border-[#accebf]/30'
-    if (name.includes('mancuerna')) return 'shadow-[0_0_20px_rgba(235,194,70,0.4)] border-[#ebc246]/30'
+    const details = getElementDetails(nombre, 1)
+    if (details.key === 'libro') return 'shadow-[0_0_20px_rgba(172,206,191,0.4)] border-[#accebf]/30'
+    if (details.key === 'mancuerna') return 'shadow-[0_0_20px_rgba(235,194,70,0.4)] border-[#ebc246]/30'
     return 'shadow-[0_0_20px_rgba(247,187,126,0.4)] border-primary/30'
   }
 
@@ -182,15 +167,15 @@ export function SantuarioRoom({
                     }`}
                   />
                 ) : (
-                  <div className={`size-16 sm:size-20 rounded-full bg-linear-to-br from-white/2 to-white/0 border border-white/10 flex items-center justify-center backdrop-blur-sm ${getGlowColor(elem.nombre_elemento)}`}>
-                    {elem.nombre_elemento.toLowerCase().includes('mancuerna') ? (
-                      <Dumbbell className="text-[#ebc246]" size={28} />
-                    ) : elem.nombre_elemento.toLowerCase().includes('esterilla') || elem.nombre_elemento.toLowerCase().includes('yoga') ? (
-                      <Sparkles className="text-primary animate-pulse" size={28} />
-                    ) : (
-                      <Leaf className="text-[#accebf]" size={28} />
-                    )}
-                  </div>
+                  (() => {
+                    const details = getElementDetails(elem.nombre_elemento, elem.fase_elemento);
+                    const IconComponent = details.icon;
+                    return (
+                      <div className={`size-16 sm:size-20 rounded-full bg-linear-to-br from-white/2 to-white/0 border border-white/10 flex items-center justify-center backdrop-blur-sm ${getGlowColor(elem.nombre_elemento)}`}>
+                        <IconComponent className={`${details.iconColor} ${details.key === 'yoga' ? 'animate-pulse' : ''}`} size={28} />
+                      </div>
+                    );
+                  })()
                 )}
 
                 {/* Badge indicador del paso de edición */}
