@@ -217,11 +217,11 @@ export const checkHabit = async (req: Request, res: Response) => {
         let elementXp = element.xp_fase_actual_elemento + 20
         let threshold = 100
         
-        if (currentPhase === 1) threshold = 200
-        if (currentPhase === 2) threshold = 400
+        if (currentPhase === 2) threshold = 200
+        if (currentPhase === 3) threshold = 400
 
-        // Si no ha alcanzado la fase máxima (3), evaluar subida de fase
-        if (currentPhase < 3 && elementXp >= threshold) {
+        // Si no ha alcanzado la fase máxima (4), evaluar subida de fase
+        if (currentPhase < 4 && elementXp >= threshold) {
           elementXp -= threshold
           currentPhase += 1
         }
@@ -393,7 +393,7 @@ export const createHabit = async (req: Request, res: Response) => {
       await tx.elemento.create({
         data: {
           nombre_elemento: nombre_elemento ? nombre_elemento.trim() : 'Libro Antiguo',
-          fase_elemento: 0,
+          fase_elemento: 1,
           grid_col: 1, // Por defecto en algún lugar del grid
           grid_fila: 1,
           xp_fase_actual_elemento: 0,

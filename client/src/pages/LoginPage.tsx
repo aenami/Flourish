@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { ArrowRight, Brain, LockKeyhole, Mail } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { ComponentPropsWithoutRef } from 'react'
 
 import { AuthBrand } from '../components/AuthBrand'
@@ -16,6 +16,20 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Hide scrollbar when the login page is active
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow
+    const originalHtmlOverflow = document.documentElement.style.overflow
+
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow
+      document.documentElement.style.overflow = originalHtmlOverflow
+    }
+  }, [])
 
   const handleSubmit: ComponentPropsWithoutRef<'form'>['onSubmit'] = async (event) => {
     event.preventDefault()

@@ -93,7 +93,7 @@ model Habito {
 model Elemento {
   id_elemento Int @id @default(autoincrement())
   nombre_elemento String
-  fase_elemento Int @default(0)
+  fase_elemento Int @default(1)
   grid_col Int?
   grid_fila Int?
   xp_fase_actual_elemento Float @default(0)

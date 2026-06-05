@@ -68,7 +68,7 @@ function ElementsPage() {
         { name: 'Biblioteca organizada', desc: 'Una estantería de madera. Tu conocimiento está bien estructurado.' },
         { name: 'Espacio intelectual', desc: 'Escritorio con tintero, velas y pluma. La sabiduría guía tus días.' },
       ]
-      const currentPhase = phases[fase] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
+      const currentPhase = phases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
 
       return {
         typeLabel: 'Intelecto y Foco',
@@ -92,7 +92,7 @@ function ElementsPage() {
         { name: 'Banco de entrenamiento', desc: 'Área de fuerza con soporte. La disciplina esculpe tu físico.' },
         { name: 'Gimnasio personal', desc: 'Espacio completo con barras y discos. El templo de la disciplina.' },
       ]
-      const currentPhase = phases[fase] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
+      const currentPhase = phases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
 
       return {
         typeLabel: 'Fuerza y Disciplina',
@@ -116,7 +116,7 @@ function ElementsPage() {
         { name: 'Rincón de meditación', desc: 'Cojín de zafu y plantas de bambú. Tu santuario de introspección.' },
         { name: 'Altar zen avanzado', desc: 'Campanas tibetanas, velas y luz tenue. Armonía espiritual total.' },
       ]
-      const currentPhase = phases[fase] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
+      const currentPhase = phases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
 
       return {
         typeLabel: 'Calma y Bienestar',
@@ -135,12 +135,12 @@ function ElementsPage() {
 
     // Default / Personalizado
     const defaultPhases = [
-      { name: 'Objeto Fase 0', desc: 'Comienzo de un nuevo ciclo en tu habitación.' },
-      { name: 'Objeto Fase 1', desc: 'Tu constancia está moldeando el entorno.' },
-      { name: 'Objeto Fase 2', desc: 'La habitación refleja tu crecimiento.' },
-      { name: 'Objeto Fase 3', desc: 'Representación máxima de tu consistencia.' },
+      { name: 'Objeto Fase 1', desc: 'Comienzo de un nuevo ciclo en tu habitación.' },
+      { name: 'Objeto Fase 2', desc: 'Tu constancia está moldeando el entorno.' },
+      { name: 'Objeto Fase 3', desc: 'La habitación refleja tu crecimiento.' },
+      { name: 'Objeto Fase 4', desc: 'Representación máxima de tu consistencia.' },
     ]
-    const currentPhase = defaultPhases[fase] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
+    const currentPhase = defaultPhases[fase - 1] || { name: 'Objeto en evolución', desc: 'Tu elemento se está forjando.' }
 
     return {
       typeLabel: 'Crecimiento Personal',
@@ -229,8 +229,8 @@ function ElementsPage() {
         // Grid de Elementos
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
           {elements.map((elem) => {
-            const xpNeeded = elem.fase_elemento === 0 ? 100 : elem.fase_elemento === 1 ? 200 : 400
-            const progressPercentage = elem.fase_elemento >= 3 ? 100 : Math.max((elem.xp_fase_actual_elemento / xpNeeded) * 100, 2)
+            const xpNeeded = elem.fase_elemento === 1 ? 100 : elem.fase_elemento === 2 ? 200 : 400
+            const progressPercentage = elem.fase_elemento >= 4 ? 100 : Math.max((elem.xp_fase_actual_elemento / xpNeeded) * 100, 2)
             const details = getElementDetails(elem.nombre_elemento, elem.fase_elemento)
             const Icon = details.icon
 
@@ -339,7 +339,7 @@ function ElementsPage() {
                   <div className="border-t border-white/5 pt-4 mt-6">
                     <div className="flex items-baseline justify-between font-sans text-xs">
                       <span className="font-semibold text-on-surface-variant/50">Progreso de Fase</span>
-                      {elem.fase_elemento < 3 ? (
+                      {elem.fase_elemento < 4 ? (
                         <span className="font-bold text-on-surface-variant/80">
                           {elem.xp_fase_actual_elemento} / {xpNeeded} XP
                         </span>

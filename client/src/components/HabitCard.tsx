@@ -461,37 +461,37 @@ export function HabitCard({ habit }: HabitCardProps) {
                     <p className="font-sans text-xs text-on-surface-variant/75 mt-0.5 font-medium">
                       Fase {habit.elemento.fase_elemento}: {
                         habit.elemento.nombre_elemento === 'Libro Antiguo' ? (
-                          habit.elemento.fase_elemento === 0 ? 'Libro simple' :
-                          habit.elemento.fase_elemento === 1 ? 'Pequeña colección' :
-                          habit.elemento.fase_elemento === 2 ? 'Biblioteca organizada' :
+                          habit.elemento.fase_elemento === 1 ? 'Libro simple' :
+                          habit.elemento.fase_elemento === 2 ? 'Pequeña colección' :
+                          habit.elemento.fase_elemento === 3 ? 'Biblioteca organizada' :
                           'Espacio intelectual avanzado'
                         ) : 'Objeto en evolución'
                       }
                     </p>
 
                     {/* Barra de progreso de fase */}
-                    {habit.elemento.fase_elemento < 3 ? (
+                    {habit.elemento.fase_elemento < 4 ? (
                       <div className="mt-3">
                         <div className="flex items-center justify-between font-label text-[10px] text-on-surface-variant/50 font-bold">
                           <span>XP de Fase</span>
                           <span>
                             {habit.elemento.xp_fase_actual_elemento} / {
-                              habit.elemento.fase_elemento === 0 ? 100 :
-                              habit.elemento.fase_elemento === 1 ? 200 : 400
+                              habit.elemento.fase_elemento === 1 ? 100 :
+                              habit.elemento.fase_elemento === 2 ? 200 : 400
                             } XP
                           </span>
                         </div>
                         <div className="mt-1 h-1.5 rounded-full bg-white/5 p-0.5 overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary shadow-[0_0_8px_rgba(247,187,126,0.15)] transition-all duration-500"
-                            style={{
-                              width: `${
-                                (habit.elemento.xp_fase_actual_elemento / (
-                                  habit.elemento.fase_elemento === 0 ? 100 :
-                                  habit.elemento.fase_elemento === 1 ? 200 : 400
-                                )) * 100
-                              }%`
-                            }}
+                              className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary shadow-[0_0_8px_rgba(247,187,126,0.15)] transition-all duration-500"
+                              style={{
+                                width: `${
+                                  (habit.elemento.xp_fase_actual_elemento / (
+                                    habit.elemento.fase_elemento === 1 ? 100 :
+                                    habit.elemento.fase_elemento === 2 ? 200 : 400
+                                  )) * 100
+                                }%`
+                              }}
                           />
                         </div>
                       </div>
