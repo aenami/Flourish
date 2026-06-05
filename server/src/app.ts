@@ -18,7 +18,7 @@ app.set('port', process.env.PORT ?? 3000) // -----TRAER EL PUERTO CON UNA VARIBA
 
 // ------- MIDDLEWARES ------
 app.use(cors( {
-    origin: "http://localhost:5173"
+    origin: process.env.CLIENT_URL || "http://localhost:5173"
 } ))
 app.use(express.json())
 app.use(express.urlencoded( {extended: false} ))
