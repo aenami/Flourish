@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes.js'
 import elementRoutes from './routes/elements.routes.js'
 import habitRoutes from './routes/habits.routes.js'
 import identitiesRoutes from './routes/identities.routes.js'
+import roomRoutes from './routes/room.routes.js'
 dotenv.config();
 const app = express()
 
@@ -33,5 +34,6 @@ app.use('/auth', authRoutes)
 app.use('/elements', elementRoutes)
 app.use('/habits', habitRoutes)
 app.use('/identities', identitiesRoutes)
+app.use('/room', roomRoutes)
 
 export default app

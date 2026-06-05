@@ -389,13 +389,13 @@ export const createHabit = async (req: Request, res: Response) => {
         })
       }
 
-      // 3. Crear el elemento de habitación por defecto para el Manifiesto Visual
+      // 3. Crear el elemento de habitación por defecto para el Manifiesto Visual (sin colocar por defecto)
       await tx.elemento.create({
         data: {
           nombre_elemento: nombre_elemento ? nombre_elemento.trim() : 'Libro Antiguo',
           fase_elemento: 1,
-          grid_col: 1, // Por defecto en algún lugar del grid
-          grid_fila: 1,
+          grid_col: null,
+          grid_fila: null,
           xp_fase_actual_elemento: 0,
           id_habito_elemento: habit.id_habito,
         },

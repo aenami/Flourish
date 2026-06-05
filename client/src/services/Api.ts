@@ -64,6 +64,13 @@ export const api = {
             body: JSON.stringify(body),
         }).then(handleResponse),
 
+    patch: (endpoint: string, body: Record<string, unknown>) =>
+        fetch(`${BASE_URL}${endpoint}`, {
+            method: "PATCH",
+            headers: buildHeaders(),
+            body: JSON.stringify(body),
+        }).then(handleResponse),
+
     delete: (endpoint: string) =>
         fetch(`${BASE_URL}${endpoint}`, {
             method: "DELETE",

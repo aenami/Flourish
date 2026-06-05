@@ -3,6 +3,7 @@ import { AlertCircle, BookOpen, Brain, Dumbbell, Fingerprint, Plus, Sparkles, Tr
 import { useEffect, useState } from 'react'
 
 import { DashboardLayout } from '#/components/DashboardLayout'
+import { IdentityModal } from '#/routes/Habits/components/-IdentityModal'
 import { api } from '#/services/Api'
 
 export const Route = createFileRoute('/Identities/')({
@@ -22,6 +23,18 @@ function IdentitiesPage() {
   const [identities, setIdentities] = useState<Identidad[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showIdentityModal, setShowIdentityModal] = useState(false)
+
+  const handleIdentityCreated = async () => {
+    try {
+      const response = await api.get('/identities')
+      if (response && Array.isArray(response.data)) {
+        setIdentities(response.data)
+      }
+    } catch (err) {
+      console.error('Error refreshing identities:', err)
+    }
+  }
 
   // Obtener identidades al cargar la pantalla
   useEffect(() => {
@@ -103,7 +116,7 @@ function IdentitiesPage() {
 
         {/* Add Identity Button */}
         <button
-          onClick={() => alert('¡Pronto! Podrás forjar nuevas identidades en la siguiente fase de desarrollo.')}
+          onClick={() => setShowIdentityModal(true)}
           className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 font-label text-sm font-bold text-on-primary shadow-[0_12px_28px_rgba(247,187,126,0.14)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-fixed"
         >
           <Plus size={18} strokeWidth={2.4} />
@@ -150,7 +163,7 @@ function IdentitiesPage() {
 
           {/* Botón Card Placeholder */}
           <div 
-            onClick={() => alert('¡Pronto! Podrás forjar y personalizar tus identidades en la siguiente fase de desarrollo.')}
+            onClick={() => setShowIdentityModal(true)}
             className="mt-8 border border-dashed border-white/10 rounded-2xl bg-white/1 hover:bg-white/3 hover:border-primary/30 p-6 transition flex items-center gap-4 text-left cursor-pointer group"
           >
             <div className="grid size-11 place-items-center rounded-xl bg-white/5 text-on-surface-variant group-hover:bg-primary/20 group-hover:text-primary transition duration-200">
@@ -297,7 +310,7 @@ function IdentitiesPage() {
 
           {/* 4. Tarjeta placeholder "Nueva Identidad" matching the mockup */}
           <div 
-            onClick={() => alert('¡Pronto! En la siguiente fase de desarrollo podrás forjar y personalizar tus identidades.')}
+            onClick={() => setShowIdentityModal(true)}
             className="group min-h-95 rounded-3xl border border-dashed border-white/10 hover:border-primary/30 bg-white/0.5 hover:bg-white/1.5 p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
           >
             {/* Botón Circular Central con Doble Anillo */}
@@ -323,6 +336,12 @@ function IdentitiesPage() {
           "Cada acción que realizas es un voto a favor del tipo de persona en la que deseas convertirte."
         </p>
       </footer>
+
+      <IdentityModal
+        isOpen={showIdentityModal}
+        onClose={() => setShowIdentityModal(false)}
+        onCreateSuccess={handleIdentityCreated}
+      />
     </DashboardLayout>
   )
 }
