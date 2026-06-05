@@ -10,7 +10,6 @@ export const createUser = async (req: Request, res: Response) => {
 
   try {
     if (!username || !email || !password) {
-      console.log('[TRACE FAIL] Faltan campos obligatorios.')
       return res.status(400).json({
         error: true,
         message: 'Nombre, email y contrasena son obligatorios',
@@ -18,7 +17,6 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     if (password.length < 8) {
-      console.log('[TRACE FAIL] Contraseña demasiado corta.')
       return res.status(400).json({
         error: true,
         message: 'La contrasena debe tener minimo 8 caracteres',
@@ -28,7 +26,6 @@ export const createUser = async (req: Request, res: Response) => {
     const validationInfo = await existsUser(email)
 
     if (validationInfo) {
-      console.log('[TRACE FAIL] El email ya existe.')
       return res.status(409).json({
         error: true,
         message: 'El email ya esta siendo utilizado por otro usuario',
@@ -60,7 +57,6 @@ export const createUser = async (req: Request, res: Response) => {
       },
     })
   } catch (error) {
-    console.error('[TRACE ERROR FATAL] Capturado error en createUser:', error)
     if (error instanceof Error) {
       console.error('Stack trace del error:', error.stack)
     }

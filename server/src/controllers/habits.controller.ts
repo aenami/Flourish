@@ -1,15 +1,6 @@
 import type { Request, Response } from 'express'
 import prisma from '../lib/prisma.js'
 
-interface HabitInput {
-  nombre_habito: string
-  tipo_habito: 'POSITIVO' | 'NEGATIVO'
-  momentum_habito: number
-  xp_total_habito: number
-  sistema_habito: Record<string, unknown>
-  dias_semana: number[]
-}
-
 export const Habits = async (req: Request, res: Response) => {
   try {
     // 1. Tomamos el id del usuario de la request (establecido por el auth.middleware)

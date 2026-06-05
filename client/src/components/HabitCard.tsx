@@ -314,8 +314,8 @@ export function HabitCard({ habit }: HabitCardProps) {
             <div
               className={`h-full rounded-full transition-all duration-500 ${
                 isPositive
-                  ? 'bg-gradient-to-r from-secondary/80 to-secondary shadow-[0_0_10px_rgba(172,206,191,0.25)]'
-                  : 'bg-gradient-to-r from-error/80 to-error shadow-[0_0_10px_rgba(255,180,171,0.25)]'
+                  ? 'bg-linear-to-r from-secondary/80 to-secondary shadow-[0_0_10px_rgba(172,206,191,0.25)]'
+                  : 'bg-linear-to-r from-error/80 to-error shadow-[0_0_10px_rgba(255,180,171,0.25)]'
               }`}
               style={{ width: `${Math.max(currentMomentum, 2)}%` }}
             />
@@ -437,7 +437,7 @@ export function HabitCard({ habit }: HabitCardProps) {
                 return (
                   <div className="col-span-2 border-t border-white/5 pt-4 mt-1 flex flex-col sm:flex-row gap-4 items-center">
                     {/* Vista previa isométrica */}
-                    <div className="size-24 rounded-2xl bg-gradient-to-br from-[#1c1e20] to-[#0a0c0d] border border-white/5 flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
+                    <div className="size-24 rounded-2xl bg-linear-to-br from-[#1c1e20] to-[#0a0c0d] border border-white/5 flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
                       {sprite ? (
                         <img
@@ -475,7 +475,7 @@ export function HabitCard({ habit }: HabitCardProps) {
                           </div>
                           <div className="mt-1 h-1.5 rounded-full bg-white/5 p-0.5 overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary shadow-[0_0_8px_rgba(247,187,126,0.15)] transition-all duration-500"
+                              className="h-full rounded-full bg-linear-to-r from-primary/80 to-primary shadow-[0_0_8px_rgba(247,187,126,0.15)] transition-all duration-500"
                               style={{
                                 width: `${(habit.elemento.xp_fase_actual_elemento / xpNeeded) * 100}%`
                               }}

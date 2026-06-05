@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
 import { getSpritePath, getElementDetails } from '#/utils/elementRegistry'
 
 export interface ElementRoomData {
@@ -68,7 +67,7 @@ export function SantuarioRoom({
   return (
     <div className="relative w-full max-w-3xl mx-auto bg-transparent">
       {/* 1. Habitación Base */}
-      <div className="relative w-full aspect-[1324/1188] select-none pointer-events-none">
+      <div className="relative w-full aspect-1324/1188 select-none pointer-events-none">
         <img
           src="/assets/habitacion/habitacion.png"
           alt="Santuario Visual Base"
@@ -136,7 +135,7 @@ export function SantuarioRoom({
                   onSelectElement(isSelected ? null : elem.id_elemento)
                 }
               }}
-              className={`absolute -translate-x-1/2 -translate-y-[80%] transition-all duration-500 ${
+              className={`absolute -translate-x-1/2 translate-y-[80%] transition-all duration-500 ${
                 isEditMode ? 'cursor-pointer hover:scale-105' : ''
               }`}
               style={{ left: pos.left, top: pos.top }}

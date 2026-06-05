@@ -19,7 +19,7 @@ export interface ElementDef {
 }
 
 // Eager glob matches all .png files inside client/src/assets/elements as compiled URL strings
-const pngFiles = import.meta.glob('../assets/elements/**/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const pngFiles = import.meta.glob('../assets/elements/**/*.png', { eager: true, query: '?url', import: 'default' });
 
 // Predefined configurations for folders
 const KNOWN_ELEMENTS: Record<string, Partial<ElementDef>> = {
@@ -120,7 +120,7 @@ export function getRegisteredElements(): ElementDef[] {
   if (cachedElements) return cachedElements;
 
   // Process the glob results
-  const foldersMap: Record<string, { maxPhase: number }> = {};
+  const foldersMap: Record<string, { maxPhase: number } | undefined> = {};
 
   Object.keys(pngFiles).forEach((key) => {
     // Key format contains /assets/elements/folderName/fase_X.png
@@ -131,21 +131,24 @@ export function getRegisteredElements(): ElementDef[] {
       if (folder === 'Nueva carpeta') return;
       
       const phaseNum = parseInt(match[2], 10);
-      if (!foldersMap[folder]) {
-        foldersMap[folder] = { maxPhase: 0 };
+      let entry = foldersMap[folder];
+      if (!entry) {
+        entry = { maxPhase: 0 };
+        foldersMap[folder] = entry;
       }
-      if (phaseNum > foldersMap[folder].maxPhase) {
-        foldersMap[folder].maxPhase = phaseNum;
+      if (phaseNum > entry.maxPhase) {
+        entry.maxPhase = phaseNum;
       }
     }
   });
 
   const diskElements: ElementDef[] = Object.keys(foldersMap).map((folderName) => {
-    const maxPhase = foldersMap[folderName].maxPhase;
+    const folderData = foldersMap[folderName];
+    const maxPhase = folderData ? folderData.maxPhase : 1;
     const known = KNOWN_ELEMENTS[folderName];
 
     // Capitalize name
-    const displayName = known?.name || folderName
+    const displayName = known.name || folderName
       .split(/[-_]+/)
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
@@ -170,7 +173,7 @@ export function getRegisteredElements(): ElementDef[] {
 
     const phases = [];
     for (let i = 1; i <= 4; i++) {
-      if (known?.phases && known.phases[i - 1]) {
+      if (known.phases && known.phases[i - 1]) {
         phases.push(known.phases[i - 1]);
       } else {
         phases.push({
@@ -183,16 +186,16 @@ export function getRegisteredElements(): ElementDef[] {
     return {
       key: folderName,
       name: displayName,
-      icon: known?.icon || icon,
-      iconColor: known?.iconColor || iconColor,
-      iconBg: known?.iconBg || 'bg-white/5 border border-white/10',
-      themeProgressBg: known?.themeProgressBg || 'bg-primary',
-      themeText: known?.themeText || 'text-primary',
-      glowStyle: known?.glowStyle || 'shadow-[0_0_25px_rgba(255,255,255,0.02)]',
+      icon: known.icon || icon,
+      iconColor: known.iconColor || iconColor,
+      iconBg: known.iconBg || 'bg-white/5 border border-white/10',
+      themeProgressBg: known.themeProgressBg || 'bg-primary',
+      themeText: known.themeText || 'text-primary',
+      glowStyle: known.glowStyle || 'shadow-[0_0_25px_rgba(255,255,255,0.02)]',
       hasSprite: true,
       spriteFolder: folderName,
       maxPhase,
-      typeLabel: known?.typeLabel || 'Crecimiento Personal',
+      typeLabel: known.typeLabel || 'Crecimiento Personal',
       phases
     };
   });
@@ -201,7 +204,7 @@ export function getRegisteredElements(): ElementDef[] {
   return cachedElements;
 }
 
-export function getElementDetails(nombreElemento: string, fase: number): ElementDef {
+export function getElementDetails(nombreElemento: string): ElementDef {
   const normInput = nombreElemento.toLowerCase();
   
   // Find a matching element definition
@@ -240,11 +243,12 @@ export function getElementDetails(nombreElemento: string, fase: number): Element
 }
 
 export function getSpritePath(nombreElemento: string, fase: number): string | null {
-  const details = getElementDetails(nombreElemento, fase);
+  const details = getElementDetails(nombreElemento);
   if (!details.hasSprite || !details.spriteFolder) {
     return null;
   }
   const clampedPhase = Math.min(Math.max(fase, 1), details.maxPhase);
   const targetKey = `../assets/elements/${details.spriteFolder}/fase_${clampedPhase}.png`;
-  return pngFiles[targetKey] || null;
+  const url = pngFiles[targetKey];
+  return typeof url === 'string' ? url : null;
 }

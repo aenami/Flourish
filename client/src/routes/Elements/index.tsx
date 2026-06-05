@@ -1,11 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   AlertCircle,
-  BookOpen,
-  Dumbbell,
   Leaf,
   Plus,
-  Sparkles,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { getElementDetails, getSpritePath } from '#/utils/elementRegistry'
